@@ -2,6 +2,8 @@ package it.unibs.pajc.salm2d;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import javax.swing.*;
 
 
@@ -34,54 +36,50 @@ public class PaintArea extends JComponent implements KeyListener {
 
         w = getWidth();
         h = getHeight();
+        //double s = Math.min(w, h) / 100.;
         //System.out.println(w + " " + " " +h);
 
         g2.setColor(Color.GREEN);
         g2.setStroke(new BasicStroke(2f));
         g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
+        //g2.scale(s, -s);
+        //g2.translate(w/2, h/2);
         g2.scale(1, -1);
         g2.translate(w/2, h/2);
 
-        g2.drawOval(wr,hr,50,50);
+        g2.drawOval(wr,hr,40,40);
 
     }
 
     int delta = 1;
     private void updateCoords() {
-        if(moveUp)
+
+        if(keyControl.contains(""+KeyEvent.VK_W))
             setHr(getHr()+delta);
-        if(moveDown)
+        if(keyControl.contains(""+KeyEvent.VK_S))
             setHr(getHr()-delta);
-        if(moveRight)
+        if(keyControl.contains(""+KeyEvent.VK_D))
             setWr(getWr()+delta);
-        if(moveLeft)
+        if(keyControl.contains(""+KeyEvent.VK_A))
             setWr(getWr()-delta);
     }
 
-    boolean moveUp = false, moveDown = false, moveLeft = false, moveRight = false;
+    ArrayList<String> keyControl = new ArrayList<>();
     @Override
     public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_SHIFT)
+            delta = 5;
 
-        if(e.getKeyCode() == KeyEvent.VK_W)
-            moveUp = true;
-        if (e.getKeyCode() == KeyEvent.VK_S)
-            moveDown = true;
-        if(e.getKeyCode() == KeyEvent.VK_A)
-            moveLeft = true;
-        if (e.getKeyCode() == KeyEvent.VK_D)
-            moveRight = true;
+        if(!keyControl.contains(""+e.getKeyCode()))
+            keyControl.add(""+e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_W)
-            moveUp = false;
-        if (e.getKeyCode() == KeyEvent.VK_S)
-            moveDown = false;
-        if(e.getKeyCode() == KeyEvent.VK_A)
-            moveLeft = false;
-        if (e.getKeyCode() == KeyEvent.VK_D)
-            moveRight = false;
+        if(e.getKeyCode() == KeyEvent.VK_SHIFT)
+            delta = 1;
+
+        keyControl.remove(""+e.getKeyCode());
     }
 
     @Override
