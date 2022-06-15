@@ -2,32 +2,51 @@ package it.unibs.pajc.salm2d;
 
 import java.io.*;
 import java.net.*;
-
-public class Server {
-    public static void main(String[] args) {
-
-        int port = 1234;
-
-        System.out.println("Avvio del server....");
-
-        try(
-                ServerSocket server = new ServerSocket(port)
-        ){
-
-            while(true) {
+  
+// Server class
+class Server {
+    public static void main(String[] args)
+    {
+        ServerSocket server = null;
+  
+        try {
+  
+            // server is listening on port 1234
+            server = new ServerSocket(1234);
+            server.setReuseAddress(true);
+  
+            // running infinite loop for getting
+            // client request
+            while (true) {
+  
+                // socket object to receive incoming client
+                // requests
                 Socket client = server.accept();
-                Protocol p = new Protocol(client);
-                Thread clientThread = new Thread(p);
-                clientThread.start();
+  
+                // Displaying that new client is connected
+                // to server
+                System.out.println("New client connected" + client.getInetAddress().getHostAddress());
+  
+                // create a new thread object
+                ClientHandler clientSock = new ClientHandler(client);
+  
+                // This thread will handle the client
+                // separately
+                new Thread(clientSock).start();
             }
-
-
-        } catch(IOException ex) {
-            System.err.println("Errore di comunicazione: " + ex);
         }
-
-        System.out.println("exit....");
-
-    }
-
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (server != null) {
+                try {
+                    server.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }  
 }
