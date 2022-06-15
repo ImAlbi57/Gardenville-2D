@@ -1,2 +1,2 @@
 # SALM2D
-Gioco 2d per il progetto di PAJC
+Gioco 2D per il progetto di PAJC
