@@ -9,11 +9,18 @@ public class PaintArea extends JComponent implements KeyListener {
 
     private int h;
     private int w;
-    private int wr = 200;
-    private int hr = 200;
+    private int wr = 0;
+    private int hr = 0;
 
     public PaintArea() {
-        addKeyListener(this);
+        Timer t = new Timer(10, (e) -> {
+            updateCoords();
+            repaint();
+        });
+        t.start();
+        this.setFocusable(true);
+        this.requestFocus();
+        this.addKeyListener(this);
     }
 
 
@@ -23,51 +30,63 @@ public class PaintArea extends JComponent implements KeyListener {
         Graphics2D g2 = (Graphics2D)g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        updateCoords();
+
         w = getWidth();
         h = getHeight();
-        System.out.println(w + " " + " " +h);
+        //System.out.println(w + " " + " " +h);
 
         g2.setColor(Color.GREEN);
         g2.setStroke(new BasicStroke(2f));
         g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
         g2.scale(1, -1);
         g2.translate(w/2, h/2);
-        g2.drawRect(0,0,10,10);
+
+        g2.drawOval(wr,hr,50,50);
 
     }
 
-
-
-    @Override
-    /*
-    87 -> w
-    83 -> s
-    65 -> a
-    68 -> d
-     */
-    public void keyTyped(KeyEvent e) {
-        String keyType;
-        System.out.println(e.getKeyCode());
-        if(e.getKeyCode() == 87){
-            hr = getHr() + 10;
-        } else if (e.getKeyCode() == 83){
-            hr = getHr() - 10;
-        } else if(e.getKeyCode() == 65){
-            wr = getWr() - 10;
-        } else if (e.getKeyCode() == 68) {
-            wr = getWr() + 10;
-        }
-        this.repaint();
+    int delta = 1;
+    private void updateCoords() {
+        if(moveUp)
+            setHr(getHr()+delta);
+        if(moveDown)
+            setHr(getHr()-delta);
+        if(moveRight)
+            setWr(getWr()+delta);
+        if(moveLeft)
+            setWr(getWr()-delta);
     }
 
+    boolean moveUp = false, moveDown = false, moveLeft = false, moveRight = false;
     @Override
     public void keyPressed(KeyEvent e) {
 
+        if(e.getKeyCode() == KeyEvent.VK_W)
+            moveUp = true;
+        if (e.getKeyCode() == KeyEvent.VK_S)
+            moveDown = true;
+        if(e.getKeyCode() == KeyEvent.VK_A)
+            moveLeft = true;
+        if (e.getKeyCode() == KeyEvent.VK_D)
+            moveRight = true;
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_W)
+            moveUp = false;
+        if (e.getKeyCode() == KeyEvent.VK_S)
+            moveDown = false;
+        if(e.getKeyCode() == KeyEvent.VK_A)
+            moveLeft = false;
+        if (e.getKeyCode() == KeyEvent.VK_D)
+            moveRight = false;
+    }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // NON UTILIZZARE
     }
 
     public int getWr() {

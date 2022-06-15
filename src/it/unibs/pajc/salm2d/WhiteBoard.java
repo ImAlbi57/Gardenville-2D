@@ -40,6 +40,7 @@ public class WhiteBoard {
 
         PaintArea paint = new PaintArea();
         frame.getContentPane().add(paint);
+        frame.addKeyListener(paint);
 
 
 
