@@ -5,22 +5,9 @@ import java.awt.*;
 
 public class WhiteBoard {
     public JFrame frame;
+    int x;
+    int y;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    WhiteBoard window = new WhiteBoard();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     /**
      * Create the application.
@@ -39,11 +26,16 @@ public class WhiteBoard {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         PaintArea paint = new PaintArea();
-        frame.getContentPane().add(paint);
         frame.addKeyListener(paint);
+        frame.getContentPane().add(paint);
+        frame.setVisible(true);
+    }
 
+    public int getX() {
+        return x;
+    }
 
-
-
+    public int getY() {
+        return y;
     }
 }
