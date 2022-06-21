@@ -1,51 +1,46 @@
 package it.unibs.pajc.salm2d;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Coords {
-    private double x;
-    private double y;
+    private int x;
+    private int y;
 
     //Metodo costruttore
-    public Coords(double x, double y) {
+    public Coords(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
     //Getters
-    public double getX() {
+    public int getX() {
         return x;
     }
-    public double getY() {
+    public int getY() {
         return y;
     }
 
     //Setters
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
     }
 
     //Metodo Equals, ritorna true se la x e la y corrispondono
-    public boolean equals(Coords c) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coords c = (Coords) o;
         return this.x == c.getX() && this.y == c.getY();
-    }
-
-    //Verifica se una stringa è una valida coordinata
-    public static boolean validateCoords(String str) {
-        String[] parts = str.split(";");
-        if(parts.length != 2)
-            return false;
-        //^[-+]?[0-9]+([\,|\.][0-9]+)?$ regex
-        // [+-]? = possibili "+" e "-", [0-9]+ = 1+ corrispondenze, gruppo dopo il + opzionale per i decimali (con virgola o punto)
-        return Pattern.matches("^[-+]?[0-9]+([\\,|\\.][0-9]+)?$",parts[0]) && Pattern.matches("^[-+]?[0-9]+([\\,|\\.][0-9]+)?$",parts[1]);
     }
 
     @Override
     public String toString() {
-        return "(" + String.format("%.3f", x) + "; " + String.format("%.3f", y) + ")";
+        return "(" + x + "; " + y + ")";
     }
 
 }
