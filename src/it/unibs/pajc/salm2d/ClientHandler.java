@@ -1,19 +1,14 @@
 package it.unibs.pajc.salm2d;
 
-import it.unibs.pajc.salm2d.Coords;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
-import java.util.Objects;
+import java.util.ArrayList;
 
 // ClientHandler class
 public class ClientHandler implements Runnable {
     // socket ricezione messaggio client
     Socket socket;
+    private static ArrayList<ClientHandler> clientList = new ArrayList<>();
     private BufferedReader in;
     private PrintWriter out;
     private int ID;
@@ -25,6 +20,7 @@ public class ClientHandler implements Runnable {
         this.ID = ID;
         this.socket = socket;
         isAlive = true;
+        clientList.add(this);
     }
 
     @Override
@@ -36,13 +32,46 @@ public class ClientHandler implements Runnable {
             out.println(ID);
             out.flush();
 
-            while(in.readLine() != null){
-                Coords c = new Coords(in.readLine());
-                System.out.println("(x, y): " + c);
+            Coords c = new Coords();
+            String msg;
+            while( (msg = in.readLine()) != null){
+                String parts[] = msg.split(":");
+                int idMsg = Integer.parseInt(parts[0]);
+                c.update(parts[1]);
+
+                //System.out.println(this.ID  + " ==? " + idMsg);
+                //Messaggio ricevuto dal proprio client -> mando agli altri handler
+                if(this.ID == idMsg){
+                    sendToOthers(this, msg);
+                    System.out.println(ID + "#: " + c);
+                }
+                //Messaggio ricevuto da un altro clientHandler -> mando al client
+                else{
+                    out.println(msg);
+                }
             }
         } catch (IOException e) {
             System.out.println("Utente " + ID + " disconnesso");
             isAlive = false;
+        }
+    }
+
+    protected void sendToAll(ClientHandler sender, String message) {
+        clientList.forEach(c -> c.sendMessage(sender, message));
+    }
+
+    protected void sendToOthers(ClientHandler sender, String message) {
+        clientList.stream().filter(ch -> !ch.equals(sender)).forEach(c -> sendMessage(c, message));
+    }
+
+    protected void sendMessage(ClientHandler destination, String message) {
+        try {
+            OutputStream os = destination.getSocket().getOutputStream();
+            PrintWriter toDestination = new PrintWriter(os, true);
+            toDestination.println(message);
+            this.out.flush();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -64,6 +93,10 @@ public class ClientHandler implements Runnable {
 
     public int getID() {
         return ID;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     public boolean isAlive() {

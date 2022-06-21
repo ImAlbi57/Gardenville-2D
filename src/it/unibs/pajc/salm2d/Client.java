@@ -4,20 +4,26 @@ import javax.swing.*;
 import javax.swing.Timer;
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 // Client class
 public class Client {
 
-    static int port;
+    private static int port;
+    private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
     private static int ID;
-    private int x;
-    private int y;
 
     public Client(int port){
         this.port = port;
+        try {
+            socket = new Socket("localhost", port);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Utente connesso");
     }
 
     public static void main(String[] args){
@@ -28,8 +34,7 @@ public class Client {
 
 
     public void start(){
-        try (Socket socket = new Socket("localhost", port)) {
-            System.out.println("Utente connesso");
+        try {
 
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -42,22 +47,52 @@ public class Client {
 
             WhiteBoard wb = new WhiteBoard();
 
-            while(wb.getCoords() != null){
-                Coords c = wb.getCoords();
-                out.println(c.toString());
-                out.flush();
-                TimeUnit.MILLISECONDS.sleep(500);
-            }
+            Thread t1 = new Thread(() -> clientToClientHandler(wb));
+            Thread t2 = new Thread(() -> clientHandlerToClient());
+            t1.start();
+            t2.start();
 
-            in.close();
-            out.close();
+            //in.close();
+            //out.close();
 
         }
         catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void clientToClientHandler(WhiteBoard wb) {
+        while(true){
+            Coords c = wb.getCoords();
+            out.println(ID + ":" + c.toString());
+            out.flush();
+            try {
+                TimeUnit.MILLISECONDS.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void clientHandlerToClient() {
+        try {
+            String message;
+            while((message = in.readLine()) != null) {
+                updatePlayer(message);
+            }
+
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void updatePlayer(String message){
+        String parts[] = message.split(":");
+        int playerID = Integer.parseInt(parts[0]);
+        Coords playerCoords = new Coords(parts[1]);
+        System.out.println(playerID + "#: " + playerCoords);
     }
 }
 
