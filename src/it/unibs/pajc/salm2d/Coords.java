@@ -21,6 +21,7 @@ public class Coords {
         this.y = Integer.parseInt(parts[1]);
     }
 
+
     //Getters
     public int getX() {
         return x;

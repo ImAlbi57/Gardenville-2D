@@ -54,7 +54,6 @@ public class PaintArea extends JComponent implements KeyListener {
 
     int delta = 1;
     private void updateCoords() {
-
         if(keyControl.contains(""+KeyEvent.VK_W))
             setHr(getHr()+delta);
         if(keyControl.contains(""+KeyEvent.VK_S))

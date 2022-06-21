@@ -1,5 +1,6 @@
 package it.unibs.pajc.salm2d;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -12,8 +13,12 @@ public class Server {
     private ArrayList<ClientHandler> users;
     private int port;
     private boolean connection;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+    private BufferedReader in;
+    private PrintWriter out;
+
+    private int xPos;
+    private int yPos;
+
 
     public Server(int port){
         this.port = port;
@@ -28,34 +33,40 @@ public class Server {
             ServerSocket server = new ServerSocket(port);
             server.setReuseAddress(true);
 
-            System.out.println(users.size());
+            int countUsers = users.size();
             System.out.println("Server in ascolto sulla porta: " + port);
+
             while (connection) {
 
                 Socket client = server.accept();
+                removeDeadUser();
                 if(users.size() < 2){
-                    ClientHandler handler = new ClientHandler(client);
+                    ClientHandler handler = new ClientHandler(client, ++countUsers);
                     users.add(handler);
 
-                    System.out.println("Utente " + users.size() + " connesso");
+                    System.out.println("Utente " + countUsers + " connesso");
 
-
-                    handler.start();
+                    Thread clientThread = new Thread(handler);
+                    clientThread.start();
 
                 }
                 else{
+                    //out.println(-1);
                     client.close();
                 }
+
+
             }
 
             try {
                 server.close();
                 for (int i = 0; i < users.size(); ++i) {
                     ClientHandler tc = users.get(i);
+                    System.out.println(users.size());
                     try {
                         // Chiusura di DataStream
-                        tc.inputStream.close();
-                        tc.inputStream.close();
+                        tc.getIn().close();
+                        tc.getOut().close();
                         tc.socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -69,39 +80,24 @@ public class Server {
         }
     }
 
+    public void removeDeadUser(){
+        System.out.println("Controllo utenti");
+        for(int i = 0; i < users.size(); i++){
+            if(!users.get(i).isAlive()){
+                System.out.println("Utente " + users.get(i).getID() + " rimosso");
+                users.remove(i);
+                i--;
+            }
+        }
+
+    }
+
 
     public static void main(String[] args)
     {
         int port = 1234;
-
         Server server = new Server(port);
         server.start();
     }
 
-    // ClientHandler class
-    public class ClientHandler extends Thread {
-        // socket ricezione messaggio client
-        Socket socket;
-        ObjectInputStream inputStream;
-        ObjectOutputStream outputStream;
-        int ID;
-        public String username;
-
-
-        //Costruttore
-        ClientHandler(Socket socket) {
-            ID = ++ID;
-            this.socket = socket;
-
-            try {
-                //outputStream = new ObjectOutputStream(socket.getOutputStream());
-                //inputStream = new ObjectInputStream(socket.getInputStream());
-                // Legge il primo messaggio inviato
-                //username = (String) inputStream.readObject();
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
 }

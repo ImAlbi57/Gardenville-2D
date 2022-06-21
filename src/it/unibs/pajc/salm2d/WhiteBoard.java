@@ -1,12 +1,12 @@
 package it.unibs.pajc.salm2d;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class WhiteBoard {
     public JFrame frame;
     int x;
     int y;
+    private PaintArea paint = new PaintArea();
 
 
     /**
@@ -25,17 +25,17 @@ public class WhiteBoard {
         frame.setBounds(100, 100, 750, 460);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        PaintArea paint = new PaintArea();
         frame.addKeyListener(paint);
         frame.getContentPane().add(paint);
         frame.setVisible(true);
+
     }
 
-    public int getX() {
-        return x;
+    public Coords getCoords(){
+        return new Coords(paint.getWr(), paint.getHr());
     }
 
-    public int getY() {
-        return y;
-    }
+
+
+
 }
