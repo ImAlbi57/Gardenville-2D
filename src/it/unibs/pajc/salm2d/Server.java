@@ -18,7 +18,6 @@ public class Server {
     public Server(int port){
         this.port = port;
         users = new ArrayList<ClientHandler>();
-        System.out.println(users.size());
     }
 
 
@@ -30,24 +29,22 @@ public class Server {
             server.setReuseAddress(true);
 
             System.out.println(users.size());
-
+            System.out.println("Server in ascolto sulla porta: " + port);
             while (connection) {
-                System.out.println("Server in ascolto sulla porta: " + port);
-
-                if(!connection) break;
 
                 Socket client = server.accept();
                 if(users.size() < 2){
                     ClientHandler handler = new ClientHandler(client);
                     users.add(handler);
-                    outputStream.writeObject("Benvenuto Client: " + users.size());
 
-                    System.out.println(users.size());
+                    System.out.println("Utente " + users.size() + " connesso");
+
+
                     handler.start();
+
                 }
                 else{
                     client.close();
-                    server.close();
                 }
             }
 
@@ -77,7 +74,6 @@ public class Server {
     {
         int port = 1234;
 
-
         Server server = new Server(port);
         server.start();
     }
@@ -87,7 +83,7 @@ public class Server {
         // socket ricezione messaggio client
         Socket socket;
         ObjectInputStream inputStream;
-        ObjectOutputStream outputStreamm;
+        ObjectOutputStream outputStream;
         int ID;
         public String username;
 
@@ -98,17 +94,13 @@ public class Server {
             this.socket = socket;
 
             try {
-                outputStreamm = new ObjectOutputStream(socket.getOutputStream());
-                inputStream = new ObjectInputStream(socket.getInputStream());
+                //outputStream = new ObjectOutputStream(socket.getOutputStream());
+                //inputStream = new ObjectInputStream(socket.getInputStream());
                 // Legge il primo messaggio inviato
-                username = (String) inputStream.readObject();
-                System.out.println(users.size());
+                //username = (String) inputStream.readObject();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }

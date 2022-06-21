@@ -19,18 +19,17 @@ public class Client {
         try (Socket socket = new Socket("localhost", port)) {
             System.out.println("Utente connesso");
 
-            WhiteBoard wb = new WhiteBoard();
-
             // Le 3 righe seguenti sono utilizzate per ricevere e stampare il messaggio del server
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            System.out.println(reader.readLine());
+            //ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            //System.out.println(reader.readLine());
 
         }
-
         catch (IOException e) {
             e.printStackTrace();
         }
+
+        WhiteBoard wb = new WhiteBoard();
     }
 }
 
