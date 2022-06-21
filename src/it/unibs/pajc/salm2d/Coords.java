@@ -13,6 +13,14 @@ public class Coords {
         this.y = y;
     }
 
+    //Metodo costruttore da stringa (stile toString)
+    public Coords(String s){
+        String cleaner = s.substring(1, s.length()-1).stripLeading().replaceAll("\\s+","");
+        String parts[] = cleaner.split(";");
+        this.x = Integer.parseInt(parts[0]);
+        this.y = Integer.parseInt(parts[1]);
+    }
+
     //Getters
     public int getX() {
         return x;
@@ -40,7 +48,7 @@ public class Coords {
 
     @Override
     public String toString() {
-        return "(" + x + "; " + y + ")";
+        return "(" + x + " ; " + y + ")";
     }
 
 }
