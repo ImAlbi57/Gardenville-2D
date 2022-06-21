@@ -15,7 +15,7 @@ public class Coords {
 
     //Metodo costruttore da stringa (stile toString)
     public Coords(String s){
-        String cleaner = s.substring(1, s.length()-1).stripLeading().replaceAll("\\s+","");
+        String cleaner = s.substring(1, s.length()-1).replaceAll("\\s+","");
         String parts[] = cleaner.split(";");
         this.x = Integer.parseInt(parts[0]);
         this.y = Integer.parseInt(parts[1]);
