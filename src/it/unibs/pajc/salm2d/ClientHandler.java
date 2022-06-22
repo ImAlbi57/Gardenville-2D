@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            out.println(ID);
+            out.println("#" + ID);
             out.flush();
 
             Coords c = new Coords();

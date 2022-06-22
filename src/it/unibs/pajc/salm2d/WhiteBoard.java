@@ -31,6 +31,10 @@ public class WhiteBoard {
 
     }
 
+    public void updateClientData(int idClient, Coords coords) {
+        paint.updateClientData(idClient, coords);
+    }
+
     public Coords getCoords(){
         return new Coords(paint.getWr(), paint.getHr());
     }

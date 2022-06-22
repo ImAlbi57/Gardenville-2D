@@ -15,6 +15,7 @@ public class Client {
     private BufferedReader in;
     private PrintWriter out;
     private static int ID;
+    private WhiteBoard wb;
 
     public Client(int port){
         this.port = port;
@@ -38,14 +39,21 @@ public class Client {
 
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            ID = Integer.parseInt(in.readLine());
+
+            String str;
+            while((str = in.readLine() ) != null){
+                if(str.startsWith("#")){
+                    ID = Integer.parseInt(str.substring(1));
+                    break;
+                }
+            }
             //if (ID == -1) {
             //    System.out.println("Numero massimo di utenti raggiunto");
             //    return;
             //}
             System.out.println("Benvenuto Utente: " + ID);
 
-            WhiteBoard wb = new WhiteBoard();
+            wb = new WhiteBoard();
 
             Thread t1 = new Thread(() -> clientToClientHandler(wb));
             Thread t2 = new Thread(() -> clientHandlerToClient());
@@ -70,7 +78,7 @@ public class Client {
             out.println(ID + ":" + d + ":" + c.toString());
             out.flush();
             try {
-                TimeUnit.MILLISECONDS.sleep(1000);
+                TimeUnit.MILLISECONDS.sleep(15);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
@@ -95,6 +103,8 @@ public class Client {
         Direction playerDirection = Direction.valueOf(parts[1]);
         Coords playerCoords = new Coords(parts[2]);
         System.out.println(message);
+
+        wb.updateClientData(playerID, playerCoords);
     }
 }
 

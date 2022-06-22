@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 
 
@@ -46,7 +47,6 @@ public class PaintArea extends JComponent implements KeyListener {
         //double s = Math.min(w, h) / 100.;
         //System.out.println(w + " " + " " +h);
 
-        g2.setColor(Color.GREEN);
         g2.setStroke(new BasicStroke(2f));
         g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
         //g2.scale(s, -s);
@@ -54,6 +54,12 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.scale(1, -1);
         g2.translate(w/2, h/2);
 
+        g2.setColor(Color.blue);
+        for (Map.Entry<Integer, Coords> cd : clientData.entrySet()) {
+            g2.drawOval(cd.getValue().getX(),cd.getValue().getY(),40,40);
+        }
+
+        g2.setColor(Color.GREEN);
         g2.drawOval(wr,hr,40,40);
 
     }
