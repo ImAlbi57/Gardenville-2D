@@ -66,7 +66,8 @@ public class Client {
     private void clientToClientHandler(WhiteBoard wb) {
         while(true){
             Coords c = wb.getCoords();
-            out.println(ID + ":" + c.toString());
+            Direction d = wb.getDirection();
+            out.println(ID + ":" + d + ":" + c.toString());
             out.flush();
             try {
                 TimeUnit.MILLISECONDS.sleep(1000);
@@ -91,8 +92,9 @@ public class Client {
     private void updatePlayer(String message){
         String parts[] = message.split(":");
         int playerID = Integer.parseInt(parts[0]);
-        Coords playerCoords = new Coords(parts[1]);
-        System.out.println(playerID + "#: " + playerCoords);
+        Direction playerDirection = Direction.valueOf(parts[1]);
+        Coords playerCoords = new Coords(parts[2]);
+        System.out.println(message);
     }
 }
 

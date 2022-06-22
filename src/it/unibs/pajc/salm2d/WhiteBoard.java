@@ -35,6 +35,9 @@ public class WhiteBoard {
         return new Coords(paint.getWr(), paint.getHr());
     }
 
+    public Direction getDirection(){
+        return paint.getDirection();
+    }
 
 
 

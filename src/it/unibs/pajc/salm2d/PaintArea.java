@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.*;
 
 
@@ -13,8 +14,11 @@ public class PaintArea extends JComponent implements KeyListener {
     private int w;
     private int wr = 0;
     private int hr = 0;
+    private HashMap<Integer,Coords> clientData;
 
     public PaintArea() {
+        clientData = new HashMap<>();
+
         Timer t = new Timer(10, (e) -> {
             updateCoords();
             repaint();
@@ -25,7 +29,9 @@ public class PaintArea extends JComponent implements KeyListener {
         this.addKeyListener(this);
     }
 
-
+    public void updateClientData(int idClient, Coords coords){
+        clientData.put(idClient, coords);
+    }
 
 
     protected void paintComponent(Graphics g) {
@@ -101,5 +107,9 @@ public class PaintArea extends JComponent implements KeyListener {
 
     public void setHr(int hr) {
         this.hr = hr;
+    }
+
+    public Direction getDirection(){
+        return Direction.getDirection(keyControl.contains(""+KeyEvent.VK_W), keyControl.contains(""+KeyEvent.VK_A), keyControl.contains(""+KeyEvent.VK_S), keyControl.contains(""+KeyEvent.VK_D));
     }
 }

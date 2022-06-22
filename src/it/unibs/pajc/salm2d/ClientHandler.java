@@ -33,17 +33,18 @@ public class ClientHandler implements Runnable {
             out.flush();
 
             Coords c = new Coords();
+            Direction d;
             String msg;
             while( (msg = in.readLine()) != null){
                 String parts[] = msg.split(":");
                 int idMsg = Integer.parseInt(parts[0]);
-                c.update(parts[1]);
+                d = Direction.valueOf(parts[1]);
+                c.update(parts[2]);
 
-                //System.out.println(this.ID  + " ==? " + idMsg);
                 //Messaggio ricevuto dal proprio client -> mando agli altri handler
                 if(this.ID == idMsg){
                     sendToOthers(this, msg);
-                    System.out.println(ID + "#: " + c);
+                    System.out.println(ID + "#: " + c + " -> " + d);
                 }
                 //Messaggio ricevuto da un altro clientHandler -> mando al client
                 else{

@@ -7,11 +7,17 @@ public class ClientData implements Serializable {
     private Coords coords;
     private String name;
     private Image skin;
+    private Direction direction;
 
     public ClientData(Coords coords, String name, Image skin) {
         this.coords = coords;
         this.name = name;
         this.skin = skin;
+    }
+
+    public void updatePosition(Direction direction, Coords coords){
+        this.direction = direction;
+        this.coords = coords;
     }
 
     public Coords getCoords() {
