@@ -4,8 +4,6 @@ import javax.swing.*;
 
 public class WhiteBoard {
     public JFrame frame;
-    int x;
-    int y;
     private PaintArea paint = new PaintArea();
 
 

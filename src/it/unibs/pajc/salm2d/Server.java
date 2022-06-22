@@ -1,28 +1,20 @@
 package it.unibs.pajc.salm2d;
 
-import javax.swing.*;
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 // Server class
 public class Server {
 
-    public static int ID;
-    private final Socket clientSocket = null;
     private ArrayList<ClientHandler> users;
     private int port;
     private boolean connection;
-    private BufferedReader in;
-    private PrintWriter out;
-
-    private int xPos;
-    private int yPos;
-
 
     public Server(int port){
         this.port = port;
-        users = new ArrayList<ClientHandler>();
+        users = new ArrayList<>();
     }
 
 

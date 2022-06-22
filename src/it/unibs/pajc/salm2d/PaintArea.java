@@ -1,12 +1,12 @@
 package it.unibs.pajc.salm2d;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.lang.reflect.Array;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.*;
 
 
 public class PaintArea extends JComponent implements KeyListener {

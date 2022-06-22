@@ -1,8 +1,5 @@
 package it.unibs.pajc.salm2d;
 
-import java.util.Objects;
-import java.util.regex.Pattern;
-
 public class Coords {
     private int x;
     private int y;

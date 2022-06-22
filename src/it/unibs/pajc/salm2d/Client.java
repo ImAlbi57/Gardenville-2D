@@ -1,10 +1,11 @@
 package it.unibs.pajc.salm2d;
 
 import javax.swing.*;
-import javax.swing.Timer;
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.ExecutionException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 // Client class
@@ -55,14 +56,10 @@ public class Client {
 
             wb = new WhiteBoard();
 
-            Thread t1 = new Thread(() -> clientToClientHandler(wb));
-            Thread t2 = new Thread(() -> clientHandlerToClient());
+            Thread t1 = new Thread(this::clientToClientHandler);
+            Thread t2 = new Thread(this::clientHandlerToClient);
             t1.start();
             t2.start();
-
-            //in.close();
-            //out.close();
-
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -71,7 +68,7 @@ public class Client {
         }
     }
 
-    private void clientToClientHandler(WhiteBoard wb) {
+    private void clientToClientHandler() {
         while(true){
             Coords c = wb.getCoords();
             Direction d = wb.getDirection();
