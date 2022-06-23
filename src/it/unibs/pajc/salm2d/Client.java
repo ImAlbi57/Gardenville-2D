@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,7 @@ public class Client {
     private PrintWriter out;
     private static int ID;
     private WhiteBoard wb;
+    private static Homepage hp;
 
     public Client(int port){
         this.port = port;
@@ -28,10 +30,19 @@ public class Client {
         System.out.println("Utente connesso");
     }
 
+    public Client(InetAddress ipAddress, int port){
+        this.port = port;
+        try {
+            socket = new Socket(ipAddress, port);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Utente connesso");
+    }
+
     public static void main(String[] args){
-        port = Integer.parseInt(JOptionPane.showInputDialog("Inserisci porta server:", 1234));
-        Client client = new Client(port);
-        client.start();
+        hp = new Homepage();
+        hp.setVisible(true);
     }
 
 
@@ -102,6 +113,14 @@ public class Client {
         System.out.println(message);
 
         wb.updateClientData(playerID, playerCoords);
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static void setPort(int port) {
+        Client.port = port;
     }
 }
 

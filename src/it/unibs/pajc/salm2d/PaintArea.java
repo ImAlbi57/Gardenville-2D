@@ -17,6 +17,7 @@ public class PaintArea extends JComponent implements KeyListener {
     private int hr = 0;
     private HashMap<Integer,Coords> clientData;
 
+
     public PaintArea() {
         clientData = new HashMap<>();
 
@@ -44,13 +45,9 @@ public class PaintArea extends JComponent implements KeyListener {
 
         w = getWidth();
         h = getHeight();
-        //double s = Math.min(w, h) / 100.;
-        //System.out.println(w + " " + " " +h);
 
         g2.setStroke(new BasicStroke(2f));
         g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
-        //g2.scale(s, -s);
-        //g2.translate(w/2, h/2);
         g2.scale(1, -1);
         g2.translate(w/2, h/2);
 
