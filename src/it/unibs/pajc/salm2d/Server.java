@@ -12,6 +12,7 @@ public class Server {
     private int port;
     private boolean connection;
 
+
     public Server(int port){
         this.port = port;
         users = new ArrayList<>();
