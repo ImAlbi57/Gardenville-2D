@@ -16,13 +16,15 @@ public class PaintArea extends JComponent implements KeyListener {
     private ClientData clientDataPlayer;
     private final MapManager mm;
     private HashMap<Integer,Coords> clientData;
+    private int skinCounter = 0;
+    private int spriteCounter = 0;
 
     public PaintArea(MapManager mm) {
         this.mm = mm;
         clientData = new HashMap<>();
         clientDataPlayer = new ClientData(new Coords(0,0), "Paolooo");
 
-        Timer t = new Timer(10, (e) -> {
+        Timer t = new Timer(25, (e) -> {
             updateCoords();
             repaint();
         });
@@ -64,16 +66,50 @@ public class PaintArea extends JComponent implements KeyListener {
 
         g2.setColor(Color.GREEN);
         //g2.drawOval(0,0,40,40);
-        if(keyControl.contains(""+KeyEvent.VK_W))
-            g2.drawImage(clientDataPlayer.getSkinImage(6), 0,0 , 45,-45, null);
-        else if(keyControl.contains(""+KeyEvent.VK_D))
-            g2.drawImage(clientDataPlayer.getSkinImage(4), 0,0 , 45,-45, null);
-        else if(keyControl.contains(""+KeyEvent.VK_A))
-            g2.drawImage(clientDataPlayer.getSkinImage(2), 0,0 , 45,-45, null);
-        else
-            g2.drawImage(clientDataPlayer.getSkinImage(0), 0,0 , 45,-45, null);
+        if(keyControl.contains(""+KeyEvent.VK_S)) {
+            if (skinCounter == 0) {
+                g2.drawImage(clientDataPlayer.getSkinImage(0), 0, 0, 45, -45, null);
+            }
+            if (skinCounter == 1) {
+                g2.drawImage(clientDataPlayer.getSkinImage(1), 0, 0, 45, -45, null);
+            }
+        }
+        else if(keyControl.contains(""+KeyEvent.VK_A)) {
+            if (skinCounter == 0) {
+                g2.drawImage(clientDataPlayer.getSkinImage(2), 0, 0, 45, -45, null);
+            }
+            if (skinCounter == 1) {
+                g2.drawImage(clientDataPlayer.getSkinImage(3), 0, 0, 45, -45, null);
+            }
+        }
+        else if(keyControl.contains(""+KeyEvent.VK_D)) {
+            if (skinCounter == 0) {
+                g2.drawImage(clientDataPlayer.getSkinImage(4), 0, 0, 45, -45, null);
+            }
+            if (skinCounter == 1) {
+                g2.drawImage(clientDataPlayer.getSkinImage(5), 0, 0, 45, -45, null);
+            }
+        }
+        else if(keyControl.contains(""+KeyEvent.VK_W)) {
+            if (skinCounter == 0) {
+                g2.drawImage(clientDataPlayer.getSkinImage(6), 0, 0, 45, -45, null);
+            }
+            if (skinCounter == 1) {
+                g2.drawImage(clientDataPlayer.getSkinImage(7), 0, 0, 45, -45, null);
+            }
+        }
+        else{
+            g2.drawImage(clientDataPlayer.getSkinImage(0), 0, 0, 45, -45, null);
+        }
 
 
+
+            //else if(keyControl.contains(""+KeyEvent.VK_D))
+            //    g2.drawImage(clientDataPlayer.getSkinImage(4), 0,0 , 45,-45, null);
+            //else if(keyControl.contains(""+KeyEvent.VK_A))
+            //    g2.drawImage(clientDataPlayer.getSkinImage(2), 0,0 , 45,-45, null);
+            //else
+                //g2.drawImage(clientDataPlayer.getSkinImage(0), 0,0 , 45,-45, null);
     }
 
     int delta = 1;
@@ -86,6 +122,17 @@ public class PaintArea extends JComponent implements KeyListener {
             setWr(getWr()+delta);
         if(keyControl.contains(""+KeyEvent.VK_A))
             setWr(getWr()-delta);
+
+        spriteCounter++;
+        if(spriteCounter > 10){
+            if(skinCounter == 0){
+                skinCounter = 1;
+            }
+            else if(skinCounter == 1){
+                skinCounter = 0;
+            }
+            spriteCounter = 0;
+        }
     }
 
     ArrayList<String> keyControl = new ArrayList<>();

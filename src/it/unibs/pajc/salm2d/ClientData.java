@@ -20,6 +20,7 @@ public class ClientData implements Serializable {
     private static final int UP_LEFT = 6;
     private static final int UP_RIGHT = 7;
 
+
     private Coords coords;
     private String name;
     private BufferedImage[] skin;
