@@ -13,12 +13,14 @@ public class PaintArea extends JComponent implements KeyListener {
 
     private int wr = 0;
     private int hr = 0;
+    private ClientData clientDataPlayer;
     private final MapManager mm;
     private HashMap<Integer,Coords> clientData;
 
     public PaintArea(MapManager mm) {
         this.mm = mm;
         clientData = new HashMap<>();
+        clientDataPlayer = new ClientData(new Coords(0,0), "Paolooo");
 
         Timer t = new Timer(10, (e) -> {
             updateCoords();
@@ -45,12 +47,6 @@ public class PaintArea extends JComponent implements KeyListener {
         int w = getWidth();
         int h = getHeight();
 
-        //g2.setStroke(new BasicStroke(2f));
-        //g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
-        //g2.scale(1, -1);
-        //g2.translate(w/2, h/2);
-        //mm.drawMap(g2, -wr-w/2, hr-h/2);
-
         Coords scale = new Coords(1600, 900);
         double s = Math.min(w /(double)scale.getX(), h /(double)scale.getY());
 
@@ -58,11 +54,6 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.translate(scale.getX()/2., -scale.getY()/2.);
 
         g2.setStroke(new BasicStroke(2f));
-        //g2.setColor(Color.RED);
-        //g2.drawRect(0, 0, 40, 40);
-        //g2.drawRect(-800, -450, 1600, 900);
-
-
 
         mm.drawMap(g2, -wr-500, hr-500);
 
@@ -72,7 +63,8 @@ public class PaintArea extends JComponent implements KeyListener {
         }
 
         g2.setColor(Color.GREEN);
-        g2.drawOval(0,0,40,40);
+        //g2.drawOval(0,0,40,40);
+        g2.drawImage(clientDataPlayer.getSkinImage(0), 0,0 , 45,-45, null);
 
     }
 

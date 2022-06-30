@@ -34,7 +34,7 @@ public class Homepage extends JFrame {
         lblMain.setSize(1000, 750);
         setResizable(false);
 
-        this.setTitle("SALM2D");
+        this.setTitle("GARDENVILLE");
 
         //Sound iniziale
         playMusic(Sound.MAINTHEME);
