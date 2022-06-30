@@ -3,10 +3,7 @@ package it.unibs.pajc.salm2d;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -31,10 +28,10 @@ public class Homepage extends JFrame {
      */
     public Homepage() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1000, 500);
-        img = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/res/sprites/background/imgBackground.jpg")));
+        setBounds(100, 100, 1000, 750);
+        img = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/res/sprites/background/imgBackground_3D.jpg")));
         lblMain = new JLabel(img);
-        lblMain.setSize(1000, 500);
+        lblMain.setSize(1000, 750);
         setResizable(false);
 
         this.setTitle("SALM2D");
@@ -44,7 +41,6 @@ public class Homepage extends JFrame {
 
         setContentPane(lblMain);
         lblMain.setLayout(null);
-
         txtIpAddress = new JTextField();
         txtIpAddress.addMouseListener(new MouseAdapter() {
             @Override
@@ -54,8 +50,8 @@ public class Homepage extends JFrame {
             }
         });
         txtIpAddress.setFont(new Font("Tahoma", Font.PLAIN, 17));
-        txtIpAddress.setText(" IP Server ");
-        txtIpAddress.setBounds(325, 200, 350, 40);
+        txtIpAddress.setText("IP Server ");
+        txtIpAddress.setBounds(325, 300, 350, 40);
         lblMain.add(txtIpAddress);
         txtIpAddress.setColumns(10);
 
@@ -74,7 +70,7 @@ public class Homepage extends JFrame {
                 }
             }
         });
-        btnLocal.setBounds(325, 260, 150, 40);
+        btnLocal.setBounds(325, 360, 150, 40);
         lblMain.add(btnLocal);
 
         txtUser = new JTextField();
@@ -89,7 +85,7 @@ public class Homepage extends JFrame {
         txtUser.setFont(new Font("Tahoma", Font.PLAIN, 15));
         txtUser.setText(MSG_NOME);
         txtUser.setHorizontalAlignment(SwingConstants.LEFT);
-        txtUser.setBounds(325, 150, 350, 40);
+        txtUser.setBounds(325, 250, 350, 40);
         lblMain.add(txtUser);
         txtUser.setColumns(10);
 
@@ -119,7 +115,7 @@ public class Homepage extends JFrame {
                 }
             }
         });
-        btnEsterno.setBounds(525, 260, 150, 40);
+        btnEsterno.setBounds(525, 360, 150, 40);
         lblMain.add(btnEsterno);
     }
 
