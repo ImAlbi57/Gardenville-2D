@@ -4,14 +4,21 @@ import javax.swing.*;
 
 public class WhiteBoard {
     public JFrame frame;
-    private PaintArea paint = new PaintArea();
+    private PaintArea paint;
+    private MapManager mm;
 
 
     /**
      * Create the application.
      */
     public WhiteBoard() {
+        mm = new MapManager();
+        paint = new PaintArea(mm);
+        mapInit();
         initialize();
+    }
+
+    private void mapInit() {
     }
 
     /**

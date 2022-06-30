@@ -15,10 +15,11 @@ public class PaintArea extends JComponent implements KeyListener {
     private int w;
     private int wr = 0;
     private int hr = 0;
+    private MapManager mm;
     private HashMap<Integer,Coords> clientData;
 
-
-    public PaintArea() {
+    public PaintArea(MapManager mm) {
+        this.mm = mm;
         clientData = new HashMap<>();
 
         Timer t = new Timer(10, (e) -> {
@@ -50,6 +51,8 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
         g2.scale(1, -1);
         g2.translate(w/2, h/2);
+
+        mm.drawMap(g2, -w/2, -h/2);
 
         g2.setColor(Color.blue);
         for (Map.Entry<Integer, Coords> cd : clientData.entrySet()) {
@@ -113,6 +116,11 @@ public class PaintArea extends JComponent implements KeyListener {
     }
 
     public Direction getDirection(){
-        return Direction.getDirection(keyControl.contains(""+KeyEvent.VK_W), keyControl.contains(""+KeyEvent.VK_A), keyControl.contains(""+KeyEvent.VK_S), keyControl.contains(""+KeyEvent.VK_D));
+        return Direction.getDirection(
+                keyControl.contains(""+KeyEvent.VK_W),
+                keyControl.contains(""+KeyEvent.VK_A),
+                keyControl.contains(""+KeyEvent.VK_S),
+                keyControl.contains(""+KeyEvent.VK_D)
+        );
     }
 }
