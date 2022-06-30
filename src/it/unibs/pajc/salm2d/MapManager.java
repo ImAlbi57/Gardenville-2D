@@ -11,7 +11,7 @@ public class MapManager {
 
     public static final int numTiles = 45;  //the first 10 are empty (0-9)
     public static final int mapDim = 50;
-    public static final int tileDim = 64;
+    public static final int tileDim = 128;
 
     private final Tile[] tileList;
     public int[][] mapTileNums;
