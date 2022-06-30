@@ -64,7 +64,15 @@ public class PaintArea extends JComponent implements KeyListener {
 
         g2.setColor(Color.GREEN);
         //g2.drawOval(0,0,40,40);
-        g2.drawImage(clientDataPlayer.getSkinImage(0), 0,0 , 45,-45, null);
+        if(keyControl.contains(""+KeyEvent.VK_W))
+            g2.drawImage(clientDataPlayer.getSkinImage(6), 0,0 , 45,-45, null);
+        else if(keyControl.contains(""+KeyEvent.VK_D))
+            g2.drawImage(clientDataPlayer.getSkinImage(4), 0,0 , 45,-45, null);
+        else if(keyControl.contains(""+KeyEvent.VK_A))
+            g2.drawImage(clientDataPlayer.getSkinImage(2), 0,0 , 45,-45, null);
+        else
+            g2.drawImage(clientDataPlayer.getSkinImage(0), 0,0 , 45,-45, null);
+
 
     }
 
