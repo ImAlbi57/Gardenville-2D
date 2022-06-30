@@ -1,11 +1,13 @@
 package it.unibs.pajc.salm2d;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class WhiteBoard {
     public JFrame frame;
-    private PaintArea paint;
-    private MapManager mm;
+    private final PaintArea paint;
+    private final MapManager mm;
 
 
     /**
@@ -27,12 +29,33 @@ public class WhiteBoard {
     private void initialize() {
 
         frame = new JFrame();
-        frame.setBounds(100, 100, 750, 460);
+        frame.setBounds(100, 100, 1600, 930);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.addKeyListener(paint);
         frame.getContentPane().add(paint);
         frame.setVisible(true);
+
+        paint.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_F11){
+                    frame.dispose();
+
+                    if(frame.isUndecorated()){
+                        frame.setUndecorated(false);
+                        frame.setExtendedState(JFrame.NORMAL);
+                        frame.setBounds(100, 100, 1600, 930);
+                    }
+                    else{
+                        frame.setUndecorated(true);
+                        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    }
+
+                    frame.setVisible(true);
+                }
+            }
+        });
 
     }
 

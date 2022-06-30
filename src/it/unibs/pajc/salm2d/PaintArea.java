@@ -11,11 +11,9 @@ import java.util.Map;
 
 public class PaintArea extends JComponent implements KeyListener {
 
-    private int h;
-    private int w;
     private int wr = 0;
     private int hr = 0;
-    private MapManager mm;
+    private final MapManager mm;
     private HashMap<Integer,Coords> clientData;
 
     public PaintArea(MapManager mm) {
@@ -44,15 +42,29 @@ public class PaintArea extends JComponent implements KeyListener {
 
         updateCoords();
 
-        w = getWidth();
-        h = getHeight();
+        int w = getWidth();
+        int h = getHeight();
+
+        //g2.setStroke(new BasicStroke(2f));
+        //g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
+        //g2.scale(1, -1);
+        //g2.translate(w/2, h/2);
+        //mm.drawMap(g2, -wr-w/2, hr-h/2);
+
+        Coords scale = new Coords(1600, 900);
+        double s = Math.min(w /(double)scale.getX(), h /(double)scale.getY());
+
+        g2.scale(s, -s);
+        g2.translate(scale.getX()/2., -scale.getY()/2.);
 
         g2.setStroke(new BasicStroke(2f));
-        g2.translate(0, h); // Traslo il punto di origine di 0 punti in orizzontale e 400 punti in verticale
-        g2.scale(1, -1);
-        g2.translate(w/2, h/2);
+        //g2.setColor(Color.RED);
+        //g2.drawRect(0, 0, 40, 40);
+        //g2.drawRect(-800, -450, 1600, 900);
 
-        mm.drawMap(g2, -w/2, -h/2);
+
+
+        mm.drawMap(g2, -wr-500, hr-500);
 
         g2.setColor(Color.blue);
         for (Map.Entry<Integer, Coords> cd : clientData.entrySet()) {
@@ -60,7 +72,7 @@ public class PaintArea extends JComponent implements KeyListener {
         }
 
         g2.setColor(Color.GREEN);
-        g2.drawOval(wr,hr,40,40);
+        g2.drawOval(0,0,40,40);
 
     }
 
