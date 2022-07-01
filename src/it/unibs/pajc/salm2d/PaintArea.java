@@ -11,32 +11,52 @@ import java.util.Map;
 
 public class PaintArea extends JComponent implements KeyListener {
 
-    private int wr = 0;
-    private int hr = 0;
+    private int wr;
+    private int hr;
     private ClientData clientDataPlayer;
     private final MapManager mm;
     private HashMap<Integer,Coords> clientData;
     private int skinCounter = 0;
     private int spriteCounter = 0;
+    private CollisionCheckerTest cCheck = new CollisionCheckerTest(new MapManager());
+    public Direction d = Direction.N;
+
+    boolean[] statusMovement = new boolean[4];
+    int delta;
+
 
     public PaintArea(MapManager mm) {
         this.mm = mm;
+        wr = 2725;
+        hr = 2971;
+        delta = 2;
         clientData = new HashMap<>();
         clientDataPlayer = new ClientData(new Coords(0,0), "Paolooo");
+        clientDataPlayer.collisionOn = false;
 
         Timer t = new Timer(10, (e) -> {
+            checkCollision();
             updateCoords();
             repaint();
         });
         t.start();
 
-        Timer t1 = new Timer(25, (e) -> {
-            updateSkinMovement();
+        Timer t1 = new Timer(250, (e) -> {
+            if(isMoving())
+                updateSkinMovement();
         });
         t1.start();
         this.setFocusable(true);
         this.requestFocus();
         this.addKeyListener(this);
+    }
+
+    private boolean isMoving() {
+        return
+            keyControl.contains(""+KeyEvent.VK_W) ||
+            keyControl.contains(""+KeyEvent.VK_S) ||
+            keyControl.contains(""+KeyEvent.VK_A) ||
+            keyControl.contains(""+KeyEvent.VK_D);
     }
 
     public void updateClientData(int idClient, Coords coords){
@@ -49,20 +69,18 @@ public class PaintArea extends JComponent implements KeyListener {
         Graphics2D g2 = (Graphics2D)g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        updateCoords();
-
         int w = getWidth();
         int h = getHeight();
 
         Coords scale = new Coords(1600, 900);
         double s = Math.min(w /(double)scale.getX(), h /(double)scale.getY());
 
-        g2.scale(s, -s);
-        g2.translate(scale.getX()/2., -scale.getY()/2.);
+        g2.scale(s, s);
+        g2.translate(scale.getX()/2., scale.getY()/2.);
 
         g2.setStroke(new BasicStroke(2f));
 
-        mm.drawMap(g2, -wr-500, hr-500);
+        mm.drawMap(g2, -wr, -hr);
 
         g2.setColor(Color.blue);
         for (Map.Entry<Integer, Coords> cd : clientData.entrySet()) {
@@ -72,86 +90,109 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.setColor(Color.GREEN);
         //g2.drawOval(0,0,40,40);
 
+        //Collision
+        //solidArea = new Rectangle();
+        //solidArea.x = 8;
+        //solidArea.y = 16;
+        //solidArea.width = 32;
+        //solidArea.height = 32;
+
         boolean up, down, left, right;
         up = keyControl.contains(""+KeyEvent.VK_W);
         down = keyControl.contains(""+KeyEvent.VK_S);
         left = keyControl.contains(""+KeyEvent.VK_A);
         right = keyControl.contains(""+KeyEvent.VK_D);
-        Direction d = Direction.getDirection(up, left, down, right);
+        d = Direction.updateDirection(d, up, left, down, right);
+
+        System.out.println("W: " + statusMovement[0]);
+        System.out.println("A: " + statusMovement[1]);
+        System.out.println("S: " + statusMovement[2]);
+        System.out.println("D: " + statusMovement[3]);
+
+        int x1 = clientDataPlayer.solidArea.x;
+        int x2 = clientDataPlayer.solidArea.y;
+        int x3 = clientDataPlayer.solidArea.width;
+        int x4 = clientDataPlayer.solidArea.height;
+
+        g2.drawRect(x1, x2, x3, x4);
+
 
         switch(d){
             case N:
                 if (skinCounter == 0)
-                    g2.drawImage(clientDataPlayer.getSkinImage(6), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(6), 0, 0, 60, 60, null);
                 if (skinCounter == 1)
-                    g2.drawImage(clientDataPlayer.getSkinImage(7), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(7), 0, 0, 60, 60, null);
                 break;
             case S:
                 if (skinCounter == 0)
-                    g2.drawImage(clientDataPlayer.getSkinImage(0), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(0), 0, 0, 60, 60, null);
                 if (skinCounter == 1)
-                    g2.drawImage(clientDataPlayer.getSkinImage(1), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(1), 0, 0, 60, 60, null);
                 break;
             case W:
                 if (skinCounter == 0)
-                    g2.drawImage(clientDataPlayer.getSkinImage(2), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(2), 0, 0, 60, 60, null);
                 if (skinCounter == 1)
-                    g2.drawImage(clientDataPlayer.getSkinImage(3), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(3), 0, 0, 60, 60, null);
                 break;
             case E:
                 if (skinCounter == 0)
-                    g2.drawImage(clientDataPlayer.getSkinImage(4), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(4), 0, 0, 60, 60, null);
                 if (skinCounter == 1)
-                    g2.drawImage(clientDataPlayer.getSkinImage(5), 0, 0, 60, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(5), 0, 0, 60, 60, null);
                 break;
             case NE:
-                break;
             case NW:
                 if (skinCounter == 0)
-                    g2.drawImage(clientDataPlayer.getSkinImage(6), 0, 0, 50, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(6), 5, 0, 50, 60, null);
                 if (skinCounter == 1)
-                    g2.drawImage(clientDataPlayer.getSkinImage(7), 0, 0, 50, -60, null);
+                    g2.drawImage(clientDataPlayer.getSkinImage(7), 5, 0, 50, 60, null);
                 break;
             case SE:
-                break;
             case SW:
-                break;
-
-            default:
-                g2.drawImage(clientDataPlayer.getSkinImage(0), 0, 0, 60, -60, null);
+                if (skinCounter == 0)
+                    g2.drawImage(clientDataPlayer.getSkinImage(0), 5, 0, 50, 60, null);
+                if (skinCounter == 1)
+                    g2.drawImage(clientDataPlayer.getSkinImage(1), 5, 0, 50, 60, null);
                 break;
         }
 
     }
 
-    int delta = 1;
+
     private void updateCoords() {
-        if(keyControl.contains(""+KeyEvent.VK_W))
-            setHr(getHr()+delta);
-        if(keyControl.contains(""+KeyEvent.VK_S))
+        if(keyControl.contains(""+KeyEvent.VK_W) && statusMovement[0])
             setHr(getHr()-delta);
-        if(keyControl.contains(""+KeyEvent.VK_D))
-            setWr(getWr()+delta);
-        if(keyControl.contains(""+KeyEvent.VK_A))
+        if(keyControl.contains(""+KeyEvent.VK_A) && statusMovement[1])
             setWr(getWr()-delta);
+        if(keyControl.contains(""+KeyEvent.VK_S) && statusMovement[2])
+            setHr(getHr()+delta);
+        if(keyControl.contains(""+KeyEvent.VK_D) && statusMovement[3])
+            setWr(getWr()+delta);
     }
 
     private void updateSkinMovement(){
         spriteCounter++;
-        if(spriteCounter > 10){
-            if(skinCounter == 0){
-                skinCounter = 1;
-            }
-            else if(skinCounter == 1){
-                skinCounter = 0;
-            }
-            spriteCounter = 0;
+        if(skinCounter == 0){
+            skinCounter = 1;
         }
+        else if(skinCounter == 1){
+            skinCounter = 0;
+        }
+        spriteCounter = 0;
     }
 
-    ArrayList<String> keyControl = new ArrayList<>();
+    private boolean checkCollision(){
+
+        cCheck.checkTileCollision(clientDataPlayer);
+
+        return clientDataPlayer.collisionOn;
+    }
+
+    public ArrayList<String> keyControl = new ArrayList<>();
     @Override
-    public void keyPressed(KeyEvent e) {
+    public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
             delta = 5;
 
@@ -160,9 +201,9 @@ public class PaintArea extends JComponent implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public synchronized void keyReleased(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
-            delta = 1;
+            delta = 2;
 
         keyControl.remove(""+e.getKeyCode());
     }
@@ -188,6 +229,14 @@ public class PaintArea extends JComponent implements KeyListener {
         this.hr = hr;
     }
 
+    public int getDelta() {
+        return delta;
+    }
+
+    public void setDelta(int delta) {
+        this.delta = delta;
+    }
+
     public Direction getDirection(){
         return Direction.getDirection(
                 keyControl.contains(""+KeyEvent.VK_W),
@@ -196,4 +245,85 @@ public class PaintArea extends JComponent implements KeyListener {
                 keyControl.contains(""+KeyEvent.VK_D)
         );
     }
+
+
+public class CollisionCheckerTest {
+
+    MapManager mm;
+
+    public CollisionCheckerTest(MapManager mm) {
+        this.mm = mm;
+    }
+
+    public void checkTileCollision(ClientData client) {
+
+        int entityLeftWorldX = wr + client.solidArea.x;
+        int entityRightWorldX = wr + client.solidArea.x + client.solidArea.width;
+        int entityTopWorldY = hr + client.solidArea.y;
+        int entityBottomWorldY = hr + client.solidArea.y + client.solidArea.height;
+
+        int entityLeftCol = entityLeftWorldX / mm.tileDim;
+        int entityRightCol = entityRightWorldX / mm.tileDim;
+        int entityTopRow = entityTopWorldY / mm.tileDim;
+        int entityBottomRow = entityBottomWorldY / mm.tileDim;
+
+        int tileNum1, tileNum2;
+
+
+        if(d != null) {
+            statusMovement[0] = true; // W
+            statusMovement[1] = true; // A
+            statusMovement[2] = true; // S
+            statusMovement[3] = true; // D
+            if(d.equals(Direction.N) || d.equals(Direction.NE) || d.equals(Direction.NW)) {
+                entityTopRow = (entityTopWorldY - delta) / mm.tileDim;
+                tileNum1 = mm.mapTileNums[entityLeftCol][entityTopRow];
+                tileNum2 = mm.mapTileNums[entityRightCol][entityTopRow];
+                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
+                    client.collisionOn = true;
+                    statusMovement[0] = false;
+                } else {
+                    statusMovement[0] = true;
+                }
+            }
+            if(d.equals(Direction.W) || d.equals(Direction.NW) || d.equals(Direction.SW)) {
+                entityLeftCol = (entityLeftWorldX - delta) / mm.tileDim;
+                tileNum1 = mm.mapTileNums[entityLeftCol][entityTopRow];
+                tileNum2 = mm.mapTileNums[entityLeftCol][entityBottomRow];
+                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
+                    client.collisionOn = true;
+                    statusMovement[1] = false;
+                }
+                else{
+                    statusMovement[1] = true;
+                }
+            }
+            if(d.equals(Direction.S) || d.equals(Direction.SE) || d.equals(Direction.SW) ){
+                entityBottomRow = (entityBottomWorldY + delta) / mm.tileDim;
+                tileNum1 = mm.mapTileNums[entityLeftCol][entityBottomRow];
+                tileNum2 = mm.mapTileNums[entityRightCol][entityBottomRow];
+                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
+                    client.collisionOn = true;
+                    statusMovement[2] = false;
+                }
+                else{
+                    statusMovement[2] = true;
+                }
+            }
+            if (d.equals(Direction.E) || d.equals(Direction.NE) ||d.equals(Direction.SE)) {
+                entityRightCol = (entityRightWorldX + delta) / mm.tileDim;
+                tileNum1 = mm.mapTileNums[entityRightCol][entityTopRow];
+                tileNum2 = mm.mapTileNums[entityRightCol][entityBottomRow];
+                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
+                    client.collisionOn = true;
+                    statusMovement[3] = false;
+                }
+                else{
+                    statusMovement[3] = true;
+                }
+            }
+        }
+    }
 }
+}
+

@@ -1,13 +1,11 @@
 package it.unibs.pajc.salm2d;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
-import java.util.Objects;
+
 
 public class ClientData implements Serializable {
 
@@ -25,12 +23,29 @@ public class ClientData implements Serializable {
     private String name;
     private BufferedImage[] skin;
     private Direction direction;
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
+
+
 
     public ClientData(Coords coords, String name) {
         this.coords = coords;
         this.name = name;
         skin = new BufferedImage[30];
         setSkinImages();
+        solidArea = new Rectangle();
+        solidArea.x = 14;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public void setSkinImages() {

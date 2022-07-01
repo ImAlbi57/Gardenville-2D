@@ -13,7 +13,7 @@ public class MapManager {
     public static final int mapDim = 50;
     public static final int tileDim = 128;
 
-    private final Tile[] tileList;
+    public final Tile[] tileList;
     public int[][] mapTileNums;
 
     public MapManager() {
@@ -83,12 +83,12 @@ public class MapManager {
     public void drawMap(Graphics2D g2, int startingX, int startingY){
         for (int i = 0; i < mapDim; i++) {
             for (int j = 0; j < mapDim; j++) {
-                drawTile(g2, mapTileNums[i][j], startingX + i*tileDim, -startingY - j*tileDim);
+                drawTile(g2, mapTileNums[i][j], startingX + i*tileDim, startingY + j*tileDim);
             }
         }
     }
 
     private void drawTile(Graphics2D g2, int tileNum, int x, int y) {
-        g2.drawImage(tileList[tileNum].getImg(), x, y, this.tileDim, -this.tileDim, null);
+        g2.drawImage(tileList[tileNum].getImg(), x, y, this.tileDim, this.tileDim, null);
     }
 }

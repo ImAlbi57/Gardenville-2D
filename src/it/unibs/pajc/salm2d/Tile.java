@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class Tile {
     private BufferedImage img;
-    private boolean isCollidable;
+    public boolean isCollidable;
 
     public Tile(BufferedImage img, boolean isCollidable) {
         this.img = img;
