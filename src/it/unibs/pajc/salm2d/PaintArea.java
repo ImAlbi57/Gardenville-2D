@@ -90,13 +90,6 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.setColor(Color.GREEN);
         //g2.drawOval(0,0,40,40);
 
-        //Collision
-        //solidArea = new Rectangle();
-        //solidArea.x = 8;
-        //solidArea.y = 16;
-        //solidArea.width = 32;
-        //solidArea.height = 32;
-
         boolean up, down, left, right;
         up = keyControl.contains(""+KeyEvent.VK_W);
         down = keyControl.contains(""+KeyEvent.VK_S);
@@ -104,17 +97,8 @@ public class PaintArea extends JComponent implements KeyListener {
         right = keyControl.contains(""+KeyEvent.VK_D);
         d = Direction.updateDirection(d, up, left, down, right);
 
-        System.out.println("W: " + statusMovement[0]);
-        System.out.println("A: " + statusMovement[1]);
-        System.out.println("S: " + statusMovement[2]);
-        System.out.println("D: " + statusMovement[3]);
-
-        int x1 = clientDataPlayer.solidArea.x;
-        int x2 = clientDataPlayer.solidArea.y;
-        int x3 = clientDataPlayer.solidArea.width;
-        int x4 = clientDataPlayer.solidArea.height;
-
-        g2.drawRect(x1, x2, x3, x4);
+        //player hitbox
+        g2.drawRect(clientDataPlayer.solidArea.x, clientDataPlayer.solidArea.y, clientDataPlayer.solidArea.width, clientDataPlayer.solidArea.height);
 
 
         switch(d){
@@ -173,20 +157,11 @@ public class PaintArea extends JComponent implements KeyListener {
     }
 
     private void updateSkinMovement(){
-        spriteCounter++;
-        if(skinCounter == 0){
-            skinCounter = 1;
-        }
-        else if(skinCounter == 1){
-            skinCounter = 0;
-        }
-        spriteCounter = 0;
+        skinCounter = 1 - skinCounter;
     }
 
     private boolean checkCollision(){
-
         cCheck.checkTileCollision(clientDataPlayer);
-
         return clientDataPlayer.collisionOn;
     }
 
@@ -227,14 +202,6 @@ public class PaintArea extends JComponent implements KeyListener {
 
     public void setHr(int hr) {
         this.hr = hr;
-    }
-
-    public int getDelta() {
-        return delta;
-    }
-
-    public void setDelta(int delta) {
-        this.delta = delta;
     }
 
     public Direction getDirection(){
