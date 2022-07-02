@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class ClientData implements Serializable {
@@ -18,46 +19,51 @@ public class ClientData implements Serializable {
     private static final int UP_LEFT = 6;
     private static final int UP_RIGHT = 7;
 
+    public static final int MOVEMENT_W = 0;
+    public static final int MOVEMENT_A = 1;
+    public static final int MOVEMENT_S = 2;
+    public static final int MOVEMENT_D = 3;
+
 
     private Coords coords;
     private String name;
-    private BufferedImage[] skin;
     private Direction direction;
+    private int speed;
     public Rectangle solidArea;
-    public boolean collisionOn = false;
-
+    private boolean[] availableMovements;
+    private BufferedImage[] skin;
 
 
     public ClientData(Coords coords, String name) {
         this.coords = coords;
         this.name = name;
-        skin = new BufferedImage[30];
+        this.direction = Direction.S;
+        this.speed = 2;
+        this.solidArea = new Rectangle();
+        this.solidArea.x = 14;
+        this.solidArea.y = 16;
+        this.solidArea.width = 32;
+        this.solidArea.height = 32;
+        this.availableMovements = new boolean[4];
+        this.skin = new BufferedImage[30];
         setSkinImages();
-        solidArea = new Rectangle();
-        solidArea.x = 14;
-        solidArea.y = 16;
-        solidArea.width = 32;
-        solidArea.height = 32;
     }
 
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void resetAvailableMovements(){
+        for (int i = 0; i < 4; i++)
+            this.availableMovements[i] = true;
     }
 
     public void setSkinImages() {
         try {
-            skin[DOWN_LEFT] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_down_1.png"));
-            skin[DOWN_RIGHT] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_down_2.png"));
-            skin[LEFT_1] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_left_1.png"));
-            skin[LEFT_2] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_left_2.png"));
-            skin[RIGHT_1] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_right_1.png"));
-            skin[RIGHT_2] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_right_2.png"));
-            skin[UP_LEFT] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_1.png"));
-            skin[UP_RIGHT] = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_2.png"));
+            this.skin[DOWN_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_down_1.png")));
+            this.skin[DOWN_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_down_2.png")));
+            this.skin[LEFT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_left_1.png")));
+            this.skin[LEFT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_left_2.png")));
+            this.skin[RIGHT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_right_1.png")));
+            this.skin[RIGHT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_right_2.png")));
+            this.skin[UP_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_1.png")));
+            this.skin[UP_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_2.png")));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -67,9 +73,36 @@ public class ClientData implements Serializable {
        return skin[i];
     }
 
-    public void updatePosition(Direction direction, Coords coords){
-        this.direction = direction;
-        this.coords = coords;
+    public void updateDirection(boolean up, boolean down, boolean left, boolean right){
+        this.direction = Direction.updateDirection(this.direction, up, down, left, right);
+    }
+
+    public boolean isMovementAvailable(int index){
+        return this.availableMovements[index];
+    }
+
+    public void setMovement(int index, boolean status){
+        this.availableMovements[index] = status;
+    }
+
+    public void moveX(int sign){
+        coords.setX(coords.getX() + sign*speed);
+    }
+
+    public void moveY(int sign){
+        coords.setY(coords.getY() + sign*speed);
+    }
+
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
     public Coords getCoords() {
@@ -78,11 +111,6 @@ public class ClientData implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-
-    public void setCoords(Coords coords) {
-        this.coords = coords;
     }
 
     public void setName(String name) {

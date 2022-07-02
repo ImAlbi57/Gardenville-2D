@@ -1,6 +1,5 @@
 package it.unibs.pajc.salm2d;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 // Client class
 public class Client {
 
-    private static int port;
+    private ClientData cd;
+    private int port;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -65,7 +65,8 @@ public class Client {
             //}
             System.out.println("Benvenuto Utente: " + ID);
 
-            wb = new WhiteBoard();
+            cd = new ClientData(new Coords(2725,2971), "Me");
+            wb = new WhiteBoard(cd);
 
             Thread t1 = new Thread(this::clientToClientHandler);
             Thread t2 = new Thread(this::clientHandlerToClient);
@@ -81,8 +82,8 @@ public class Client {
 
     private void clientToClientHandler() {
         while(true){
-            Coords c = wb.getCoords();
-            Direction d = wb.getDirection();
+            Coords c = cd.getCoords();
+            Direction d = cd.getDirection();
             out.println(ID + ":" + d + ":" + c.toString());
             out.flush();
             try {
@@ -113,14 +114,6 @@ public class Client {
         System.out.println(message);
 
         wb.updateClientData(playerID, playerCoords);
-    }
-
-    public static int getPort() {
-        return port;
-    }
-
-    public static void setPort(int port) {
-        Client.port = port;
     }
 }
 

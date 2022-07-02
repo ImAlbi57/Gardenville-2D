@@ -8,14 +8,16 @@ public class WhiteBoard {
     public JFrame frame;
     private final PaintArea paint;
     private final MapManager mm;
+    private final ClientData cd;
 
 
     /**
      * Create the application.
      */
-    public WhiteBoard() {
-        mm = new MapManager();
-        paint = new PaintArea(mm);
+    public WhiteBoard(ClientData cd) {
+        this.cd = cd;
+        this.mm = new MapManager();
+        this.paint = new PaintArea(mm, cd);
         mapInit();
         initialize();
     }
@@ -62,15 +64,5 @@ public class WhiteBoard {
     public void updateClientData(int idClient, Coords coords) {
         paint.updateClientData(idClient, coords);
     }
-
-    public Coords getCoords(){
-        return new Coords(paint.getWr(), paint.getHr());
-    }
-
-    public Direction getDirection(){
-        return paint.getDirection();
-    }
-
-
 
 }

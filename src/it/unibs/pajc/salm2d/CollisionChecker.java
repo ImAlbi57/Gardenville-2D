@@ -1,80 +1,55 @@
-/*package it.unibs.pajc.salm2d;
+package it.unibs.pajc.salm2d;
 
 public class CollisionChecker {
-
     MapManager mm;
+    ClientData cd;
 
-    public CollisionCheckerTest(MapManager mm) {
+    public CollisionChecker(MapManager mm, ClientData cd) {
+        this.cd = cd;
         this.mm = mm;
     }
 
     public void checkTileCollision(ClientData client) {
 
-        int entityLeftWorldX = wr + client.solidArea.x;
-        int entityRightWorldX = wr + client.solidArea.x + client.solidArea.width;
-        int entityTopWorldY = hr + client.solidArea.y;
-        int entityBottomWorldY = hr + client.solidArea.y + client.solidArea.height;
+        int entityLeftWorldX = cd.getCoords().getX() + client.solidArea.x;
+        int entityRightWorldX = cd.getCoords().getX() + client.solidArea.x + client.solidArea.width;
+        int entityTopWorldY = cd.getCoords().getY() + client.solidArea.y;
+        int entityBottomWorldY = cd.getCoords().getY() + client.solidArea.y + client.solidArea.height;
 
-        int entityLeftCol = entityLeftWorldX / mm.tileDim;
-        int entityRightCol = entityRightWorldX / mm.tileDim;
-        int entityTopRow = entityTopWorldY / mm.tileDim;
-        int entityBottomRow = entityBottomWorldY / mm.tileDim;
+        int entityLeftCol = entityLeftWorldX / MapManager.tileDim;
+        int entityRightCol = entityRightWorldX / MapManager.tileDim;
+        int entityTopRow = entityTopWorldY / MapManager.tileDim;
+        int entityBottomRow = entityBottomWorldY / MapManager.tileDim;
 
         int tileNum1, tileNum2;
 
-
+        Direction d = cd.getDirection();
         if(d != null) {
-            statusMovement[0] = true; // W
-            statusMovement[1] = true; // A
-            statusMovement[2] = true; // S
-            statusMovement[3] = true; // D
+            cd.resetAvailableMovements();
             if(d.equals(Direction.N) || d.equals(Direction.NE) || d.equals(Direction.NW)) {
-                entityTopRow = (entityTopWorldY - delta) / mm.tileDim;
+                entityTopRow = (entityTopWorldY - cd.getSpeed()) / MapManager.tileDim;
                 tileNum1 = mm.mapTileNums[entityLeftCol][entityTopRow];
                 tileNum2 = mm.mapTileNums[entityRightCol][entityTopRow];
-                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
-                    client.collisionOn = true;
-                    statusMovement[0] = false;
-                } else {
-                    statusMovement[0] = true;
-                }
+                cd.setMovement(ClientData.MOVEMENT_W, !mm.tileList[tileNum1].isCollidable && !mm.tileList[tileNum2].isCollidable);
             }
             if(d.equals(Direction.W) || d.equals(Direction.NW) || d.equals(Direction.SW)) {
-                entityLeftCol = (entityLeftWorldX - delta) / mm.tileDim;
+                entityLeftCol = (entityLeftWorldX - cd.getSpeed()) / MapManager.tileDim;
                 tileNum1 = mm.mapTileNums[entityLeftCol][entityTopRow];
                 tileNum2 = mm.mapTileNums[entityLeftCol][entityBottomRow];
-                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
-                    client.collisionOn = true;
-                    statusMovement[1] = false;
-                }
-                else{
-                    statusMovement[1] = true;
-                }
+                cd.setMovement(ClientData.MOVEMENT_A, !mm.tileList[tileNum1].isCollidable && !mm.tileList[tileNum2].isCollidable);
             }
             if(d.equals(Direction.S) || d.equals(Direction.SE) || d.equals(Direction.SW) ){
-                entityBottomRow = (entityBottomWorldY + delta) / mm.tileDim;
+                entityBottomRow = (entityBottomWorldY + cd.getSpeed()) / MapManager.tileDim;
                 tileNum1 = mm.mapTileNums[entityLeftCol][entityBottomRow];
                 tileNum2 = mm.mapTileNums[entityRightCol][entityBottomRow];
-                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
-                    client.collisionOn = true;
-                    statusMovement[2] = false;
-                }
-                else{
-                    statusMovement[2] = true;
-                }
+                cd.setMovement(ClientData.MOVEMENT_S, !mm.tileList[tileNum1].isCollidable && !mm.tileList[tileNum2].isCollidable);
             }
             if (d.equals(Direction.E) || d.equals(Direction.NE) ||d.equals(Direction.SE)) {
-                entityRightCol = (entityRightWorldX + delta) / mm.tileDim;
+                entityRightCol = (entityRightWorldX + cd.getSpeed()) / MapManager.tileDim;
                 tileNum1 = mm.mapTileNums[entityRightCol][entityTopRow];
                 tileNum2 = mm.mapTileNums[entityRightCol][entityBottomRow];
-                if (mm.tileList[tileNum1].isCollidable || mm.tileList[tileNum2].isCollidable) {
-                    client.collisionOn = true;
-                    statusMovement[3] = false;
-                }
-                else{
-                    statusMovement[3] = true;
-                }
+                cd.setMovement(ClientData.MOVEMENT_D, !mm.tileList[tileNum1].isCollidable && !mm.tileList[tileNum2].isCollidable);
             }
         }
     }
-}*/
+}
