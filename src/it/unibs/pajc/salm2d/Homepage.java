@@ -21,6 +21,7 @@ public class Homepage extends JFrame {
     private InetAddress ipAddress;
     private ImageIcon img;
     private JLabel lblMain;
+    private String username;
     Sound sound = new Sound();
 
     /**
@@ -61,6 +62,7 @@ public class Homepage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!(txtUser.getText().equals("") || txtUser.getText().equals(MSG_NOME) || txtUser.getText().equals(ERRORE_NOME))) {
                     Client client = new Client(1234);
+                    username = txtUser.getText();
                     client.start();
                     setVisible(false);
                     stopMusic();
@@ -102,6 +104,7 @@ public class Homepage extends JFrame {
                     }
                     Client client = new Client(ipAddress, 1234);
                     client.start();
+                    username = txtUser.getText();
                     setVisible(false);
                     stopMusic();
                 } else {
@@ -129,20 +132,8 @@ public class Homepage extends JFrame {
         return ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$");
     }
 
-    public String getTxtIpAddress() {
-        return txtIpAddress.getText();
-    }
-
-    public void setTxtIpAddress(JTextField txtIpAddress) {
-        this.txtIpAddress = txtIpAddress;
-    }
-
-    public String getTxtUser() {
-        return txtUser.getText();
-    }
-
-    public void setTxtUser(JTextField txtUser) {
-        this.txtUser = txtUser;
+    public String getUsername() {
+        return username;
     }
 
     public void playMusic(int i){
