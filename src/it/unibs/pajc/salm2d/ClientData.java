@@ -24,17 +24,18 @@ public class ClientData implements Serializable {
     public static final int MOVEMENT_S = 2;
     public static final int MOVEMENT_D = 3;
 
-
     private Coords coords;
     private String name;
     private Direction direction;
     private int speed;
     public Rectangle solidArea;
     private boolean[] availableMovements;
-    private BufferedImage[] skin;
+    private transient BufferedImage[] skin;
+    private int ID;
 
 
-    public ClientData(Coords coords, String name) {
+    public ClientData(int ID, Coords coords, String name) {
+        this.ID = ID;
         this.coords = coords;
         this.name = name;
         this.direction = Direction.S;
@@ -47,6 +48,13 @@ public class ClientData implements Serializable {
         this.availableMovements = new boolean[4];
         this.skin = new BufferedImage[30];
         setSkinImages();
+    }
+
+    public ClientData(ClientData cd){
+        this.ID = cd.getID();
+        this.name = new String(cd.getName());
+        this.coords = new Coords(cd.getCoords());
+        this.direction = Direction.valueOf(cd.getDirection().toString());
     }
 
     public void resetAvailableMovements(){
@@ -115,5 +123,14 @@ public class ClientData implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientData of ID=" + ID;
     }
 }

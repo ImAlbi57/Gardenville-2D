@@ -1,9 +1,6 @@
 package it.unibs.pajc.salm2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -14,8 +11,8 @@ public class Client {
     private ClientData cd;
     private int port;
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private static int ID;
     private WhiteBoard wb;
     private static Homepage hp;
@@ -25,7 +22,7 @@ public class Client {
         try {
             socket = new Socket("localhost", port);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         System.out.println("Utente connesso");
     }
@@ -35,7 +32,7 @@ public class Client {
         try {
             socket = new Socket(ipAddress, port);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         System.out.println("Utente connesso");
     }
@@ -48,12 +45,16 @@ public class Client {
 
     public void start(){
         try {
-
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-
-            String str;
-            while((str = in.readLine() ) != null){
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Object obj;
+            while((obj = in.readObject() ) != null){
+                String str = (String) obj;
                 if(str.startsWith("#")){
                     ID = Integer.parseInt(str.substring(1));
                     break;
@@ -63,57 +64,58 @@ public class Client {
             //    System.out.println("Numero massimo di utenti raggiunto");
             //    return;
             //}
-            System.out.println("Benvenuto Utente: " + ID);
-
-            cd = new ClientData(new Coords(2725,2971), "Me");
-            wb = new WhiteBoard(cd);
-
-            Thread t1 = new Thread(this::clientToClientHandler);
-            Thread t2 = new Thread(this::clientHandlerToClient);
-            t1.start();
-            t2.start();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        String username = hp.getUsername();
+        System.out.println("Benvenuto Utente: " + ID);
+
+        cd = new ClientData(ID, new Coords(2725,2971), username);
+        wb = new WhiteBoard(cd);
+
+
+        Thread t1 = new Thread(this::clientToClientHandler);
+        Thread t2 = new Thread(this::clientHandlerToClient);
+        t1.start();
+        t2.start();
     }
 
     private void clientToClientHandler() {
         while(true){
-            Coords c = cd.getCoords();
-            Direction d = cd.getDirection();
-            out.println(ID + ":" + d + ":" + c.toString());
-            out.flush();
+            try {
+                this.out.writeObject(new ClientData(cd));
+                this.out.flush();
+                System.out.println(cd.getCoords());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             try {
                 TimeUnit.MILLISECONDS.sleep(15);
             } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
     private void clientHandlerToClient() {
         try {
-            String message;
-            while((message = in.readLine()) != null) {
-                updatePlayer(message);
+            Object obj;
+            while((obj = in.readObject()) != null) {
+                updatePlayer( (ClientData) obj );
             }
 
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void updatePlayer(String message){
-        String parts[] = message.split(":");
-        int playerID = Integer.parseInt(parts[0]);
-        Direction playerDirection = Direction.valueOf(parts[1]);
-        Coords playerCoords = new Coords(parts[2]);
-        System.out.println(message);
-
-        wb.updateClientData(playerID, playerCoords);
+    private void updatePlayer(ClientData cd){
+        System.out.println("Ricevuto da " + cd.getID());
+        wb.updateClientData(cd);
     }
 }
 

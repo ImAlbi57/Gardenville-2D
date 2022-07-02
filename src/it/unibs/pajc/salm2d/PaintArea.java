@@ -13,7 +13,7 @@ public class PaintArea extends JComponent implements KeyListener {
 
     private ClientData myClientData;
     private final MapManager mm;
-    private HashMap<Integer,Coords> otherClientData;
+    private HashMap<Integer,ClientData> otherClientData;
     private int skinCounter;
     private CollisionChecker cCheck;
 
@@ -49,8 +49,8 @@ public class PaintArea extends JComponent implements KeyListener {
             keyControl.contains(""+KeyEvent.VK_D);
     }
 
-    public void updateClientData(int idClient, Coords coords){
-        otherClientData.put(idClient, coords);
+    public void updateClientData(int idClient, ClientData cd){
+        otherClientData.put(idClient, cd);
     }
 
 
@@ -73,12 +73,15 @@ public class PaintArea extends JComponent implements KeyListener {
         mm.drawMap(g2, -myClientData.getCoords().getX(), -myClientData.getCoords().getY());
 
         g2.setColor(Color.blue);
-        for (Map.Entry<Integer, Coords> cd : otherClientData.entrySet()) {
-            g2.drawOval(cd.getValue().getX(),cd.getValue().getY(),40,40);
+        for (Map.Entry<Integer, ClientData> cd : otherClientData.entrySet()) {
+            ClientData otherCd = cd.getValue();
+            int relX = otherCd.getCoords().getX() - myClientData.getCoords().getX();
+            int relY = otherCd.getCoords().getY() - myClientData.getCoords().getY();
+            Coords relativePos = new Coords(relX, relY);
+            drawPlayer(g2, otherCd, relativePos);
         }
 
         g2.setColor(Color.GREEN);
-        //g2.drawOval(0,0,40,40);
 
         boolean up = keyControl.contains(""+KeyEvent.VK_W);
         boolean down = keyControl.contains(""+KeyEvent.VK_S);
@@ -89,20 +92,22 @@ public class PaintArea extends JComponent implements KeyListener {
         //player hitbox
         g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
-
-        switch (myClientData.getDirection()) {
-            case S -> drawPlayer(g2, 0, skinCounter, 0);
-            case W -> drawPlayer(g2, 2, skinCounter, 0);
-            case E -> drawPlayer(g2, 4, skinCounter, 0);
-            case N -> drawPlayer(g2, 6, skinCounter, 0);
-            case SE, SW -> drawPlayer(g2, 0, skinCounter, 1);
-            case NE, NW -> drawPlayer(g2, 6, skinCounter, 1);
-        }
-
+        drawPlayer(g2, myClientData, Coords.ZERO);
     }
 
-    private void drawPlayer(Graphics2D g2, int index, int alternativeSkin, int diagonalMovement) {
-        g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), 0 + diagonalMovement*5, 0, 60 - diagonalMovement*10, 60, null);
+    private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos) {
+        switch (cd.getDirection()) {
+            case S -> drawSkinSprite(pos, g2, 0, skinCounter, 0);
+            case W -> drawSkinSprite(pos, g2, 2, skinCounter, 0);
+            case E -> drawSkinSprite(pos, g2, 4, skinCounter, 0);
+            case N -> drawSkinSprite(pos, g2, 6, skinCounter, 0);
+            case SE, SW -> drawSkinSprite(pos, g2, 0, skinCounter, 1);
+            case NE, NW -> drawSkinSprite(pos, g2, 6, skinCounter, 1);
+        }
+    }
+
+    private void drawSkinSprite(Coords c, Graphics2D g2, int index, int alternativeSkin, int diagonalMovement) {
+        g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
     }
 
 

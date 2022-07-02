@@ -1,6 +1,9 @@
 package it.unibs.pajc.salm2d;
 
-public class Coords {
+import java.io.Serializable;
+
+public class Coords implements Serializable {
+    public static final Coords ZERO = new Coords(0, 0);
     private int x;
     private int y;
 
@@ -18,6 +21,11 @@ public class Coords {
 
     public Coords(String init){
         update(init);
+    }
+
+    public Coords(Coords coords) {
+        this.x = coords.getX();
+        this.y = coords.getY();
     }
 
     //Metodo per aggiornare i dati da stringa

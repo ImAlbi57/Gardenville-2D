@@ -9,8 +9,8 @@ public class ClientHandler implements Runnable {
     // socket ricezione messaggio client
     Socket socket;
     private static ArrayList<ClientHandler> clientList = new ArrayList<>();
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private int ID;
     private boolean isAlive;
 
@@ -26,51 +26,50 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try{
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-
-            out.println("#" + ID);
+            out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
 
-            Coords c = new Coords();
-            Direction d;
-            String msg;
-            while( (msg = in.readLine()) != null){
-                String parts[] = msg.split(":");
-                int idMsg = Integer.parseInt(parts[0]);
-                d = Direction.valueOf(parts[1]);
-                c.update(parts[2]);
+            out.writeObject("#" + ID);
+            out.flush();
+
+            in = new ObjectInputStream(socket.getInputStream());
+
+            Object obj;
+            ClientData cd;
+            while( (obj = in.readObject()) != null ){
+                cd = (ClientData) obj;
+                //System.out.println(cd.getCoords());
 
                 //Messaggio ricevuto dal proprio client -> mando agli altri handler
-                if(this.ID == idMsg){
-                    sendToOthers(this, msg);
-                    System.out.println(ID + "#: " + c + " -> " + d);
+                if(this.ID == cd.getID()){
+                    sendToOthers(this, cd);
+                    System.out.println(ID + "#: " + cd.getCoords()+ " -> " + cd.getDirection());
                 }
                 //Messaggio ricevuto da un altro clientHandler -> mando al client
                 else{
-                    out.println(msg);
+                    out.writeObject(cd);
                 }
             }
         } catch (IOException e) {
             System.out.println("Utente " + ID + " disconnesso");
             isAlive = false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    protected void sendToAll(ClientHandler sender, String message) {
-        clientList.forEach(c -> c.sendMessage(sender, message));
+    protected void sendToAll(ClientHandler sender, ClientData cd) {
+        clientList.forEach(c -> c.sendMessage(sender, cd));
     }
 
-    protected void sendToOthers(ClientHandler sender, String message) {
-        clientList.stream().filter(ch -> !ch.equals(sender)).forEach(c -> sendMessage(c, message));
+    protected void sendToOthers(ClientHandler sender, ClientData cd) {
+        clientList.stream().filter(ch -> !ch.equals(sender)).forEach(c -> sendMessage(c, cd));
     }
 
-    protected void sendMessage(ClientHandler destination, String message) {
+    protected void sendMessage(ClientHandler destination, ClientData cd) {
         try {
-            OutputStream os = destination.getSocket().getOutputStream();
-            PrintWriter toDestination = new PrintWriter(os, true);
-            toDestination.println(message);
-            this.out.flush();
+            destination.getOut().writeObject(cd);
+            destination.getOut().flush();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -84,11 +83,11 @@ public class ClientHandler implements Runnable {
         return this.ID == that.ID;
     }
 
-    public BufferedReader getIn() {
+    public ObjectInputStream getIn() {
         return in;
     }
 
-    public PrintWriter getOut() {
+    public ObjectOutputStream getOut() {
         return out;
     }
 

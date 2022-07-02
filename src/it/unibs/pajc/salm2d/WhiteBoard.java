@@ -8,14 +8,12 @@ public class WhiteBoard {
     public JFrame frame;
     private final PaintArea paint;
     private final MapManager mm;
-    private final ClientData cd;
 
 
     /**
      * Create the application.
      */
     public WhiteBoard(ClientData cd) {
-        this.cd = cd;
         this.mm = new MapManager();
         this.paint = new PaintArea(mm, cd);
         mapInit();
@@ -31,7 +29,8 @@ public class WhiteBoard {
     private void initialize() {
 
         frame = new JFrame();
-        frame.setBounds(100, 100, 1600, 930);
+        //1600x930
+        frame.setBounds(100, 100, 800, 480);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.addKeyListener(paint);
@@ -61,8 +60,8 @@ public class WhiteBoard {
 
     }
 
-    public void updateClientData(int idClient, Coords coords) {
-        paint.updateClientData(idClient, coords);
+    public void updateClientData(ClientData cd) {
+        paint.updateClientData(cd.getID(), cd);
     }
 
 }
