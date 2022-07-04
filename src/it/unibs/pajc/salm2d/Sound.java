@@ -10,12 +10,18 @@ public class Sound {
     private Clip clip;
     private URL soundURL[] = new URL[30];
     public static final int MAINTHEME = 0;
-    public static final int PGSOUND = 1;
-    public static final int MOBSOUND = 2;
-    public static final int EXTERNALSOUND = 3;
+    public static final int WALKINGSOUND = 1;
+    public static final int RUNNINGSOUND = 2;
+    public static final int MOBSOUND = 3;
+    public static final int EXTERNALSOUND = 4;
+    public static final int COLLISIONSOUND = 5;
 
     public Sound(){
         soundURL[0] = this.getClass().getResource("/res/sound/HomeSong.wav");
+        soundURL[1] = this.getClass().getResource("/res/sound/step_grass.wav");
+        soundURL[2] = this.getClass().getResource("/res/sound/runningGrass.wav");
+        soundURL[4] = this.getClass().getResource("/res/sound/birdSoundNew.wav");
+        soundURL[5] = this.getClass().getResource("/res/sound/cuttree.wav");
     }
     public void setFile(int i){
         try{
@@ -27,13 +33,15 @@ public class Sound {
         }
     }
     public void play(){
-        clip.start();
+        if(!clip.isRunning())
+            clip.start();
     }
     public void loop(){
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     public void stop(){
-        clip.stop();
+        if(clip.isRunning())
+            clip.stop();
     }
 
 }

@@ -18,6 +18,8 @@ public class PaintArea extends JComponent implements KeyListener {
     private HashMap<Integer,ClientData> otherClientData;
     private int skinCounter;
     private CollisionChecker cCheck;
+    Sound sound = new Sound();
+    Timer t, t1, t2;
 
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
@@ -25,19 +27,27 @@ public class PaintArea extends JComponent implements KeyListener {
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
         skinCounter = 0;
+        playMusicLoop(Sound.EXTERNALSOUND);
 
-        Timer t = new Timer(10, (e) -> {
+        t = new Timer(10, (e) -> {
             checkCollision();
             updateCoords();
             repaint();
         });
         t.start();
 
-        Timer t1 = new Timer(250, (e) -> {
+        t1 = new Timer(250, (e) -> {
             if(isMoving() && !isInInventory)
                 updateSkinMovement();
         });
         t1.start();
+
+        t2 = new Timer(500, (e) -> {
+            if(isMoving())
+                startWalking();
+        });
+        t2.start();
+
         this.setFocusable(true);
         this.requestFocus();
         this.addKeyListener(this);
@@ -91,7 +101,7 @@ public class PaintArea extends JComponent implements KeyListener {
         myClientData.updateDirection(up, left, down, right);
 
         //player hitbox
-        g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
+        //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
         drawPlayer(g2, myClientData, Coords.ZERO);
 
@@ -115,6 +125,7 @@ public class PaintArea extends JComponent implements KeyListener {
         String nickname = cd.getName();
         g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
         g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
+
         switch (cd.getDirection()) {
             case S -> drawSkinSprite(pos, g2, 0, skinCounter, 0);
             case W -> drawSkinSprite(pos, g2, 2, skinCounter, 0);
@@ -140,6 +151,7 @@ public class PaintArea extends JComponent implements KeyListener {
             myClientData.moveY(1);
         if(keyControl.contains(""+KeyEvent.VK_D) && myClientData.isMovementAvailable(ClientData.MOVEMENT_D))
             myClientData.moveX(1);
+
     }
 
     private void updateSkinMovement(){
@@ -162,6 +174,8 @@ public class PaintArea extends JComponent implements KeyListener {
 
         if(!keyControl.contains(""+e.getKeyCode()))
             keyControl.add(""+e.getKeyCode());
+
+
     }
 
     @Override
@@ -170,6 +184,7 @@ public class PaintArea extends JComponent implements KeyListener {
             myClientData.setSpeed(2);
 
         keyControl.remove(""+e.getKeyCode());
+        stopMusic();
     }
 
     @Override
@@ -178,5 +193,28 @@ public class PaintArea extends JComponent implements KeyListener {
     public void resetKeyPressed(){
         keyControl.clear();
         myClientData.setSpeed(2);
+    }
+
+    private void startWalking(){
+        playMusic(Sound.WALKINGSOUND);
+    }
+    // Sound Running
+    //private void startRunning(){
+    //    playMusic(Sound.RUNNINGSOUND);
+    //}
+
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
+    }
+
+    public void playMusicLoop(int i){
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic(){
+        sound.stop();
     }
 }

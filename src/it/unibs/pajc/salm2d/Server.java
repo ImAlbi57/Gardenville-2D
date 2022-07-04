@@ -86,6 +86,7 @@ public class Server {
     }
 
 
+    //Se multiplayer cambiare porta in 8080
     public static void main(String[] args)
     {
         int port = 1234;

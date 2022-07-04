@@ -50,7 +50,7 @@ public class Homepage extends JFrame {
                 txtIpAddress.setText("");
             }
         });
-        txtIpAddress.setFont(new Font("Tahoma", Font.PLAIN, 17));
+        txtIpAddress.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtIpAddress.setText("IP Server ");
         txtIpAddress.setBounds(325, 300, 350, 40);
         lblMain.add(txtIpAddress);
@@ -102,9 +102,9 @@ public class Homepage extends JFrame {
                     } catch (UnknownHostException ex) {
                         throw new RuntimeException(ex);
                     }
-                    Client client = new Client(ipAddress, 1234);
-                    client.start();
+                    Client client = new Client(ipAddress, 8080);
                     username = txtUser.getText();
+                    client.start();
                     setVisible(false);
                     stopMusic();
                 } else {
