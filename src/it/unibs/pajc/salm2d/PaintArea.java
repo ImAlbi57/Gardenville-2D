@@ -83,16 +83,23 @@ public class PaintArea extends JComponent implements KeyListener {
 
         mm.drawMap(g2, -myClientData.getCoords().getX(), -myClientData.getCoords().getY());
 
-        g2.setColor(Color.blue);
+        //Draw OBJ
+        for(int i = 0; i < mm.objElement.length; i++){
+            if(mm.objElement[i] != null){
+                mm.objElement[i].draw(g2, mm);
+            }
+        }
+
+        g2.setColor(Color.RED);
         for (Map.Entry<Integer, ClientData> cd : otherClientData.entrySet()) {
             ClientData otherCd = cd.getValue();
             int relX = otherCd.getCoords().getX() - myClientData.getCoords().getX();
             int relY = otherCd.getCoords().getY() - myClientData.getCoords().getY();
             Coords relativePos = new Coords(relX, relY);
-            drawPlayer(g2, otherCd, relativePos);
+            drawPlayer2(g2, otherCd, relativePos);
         }
 
-        g2.setColor(Color.GREEN);
+        g2.setColor(Color.BLUE);
 
         boolean up = keyControl.contains(""+KeyEvent.VK_W);
         boolean down = keyControl.contains(""+KeyEvent.VK_S);
@@ -135,6 +142,21 @@ public class PaintArea extends JComponent implements KeyListener {
             case NE, NW -> drawSkinSprite(pos, g2, 6, skinCounter, 1);
         }
     }
+    private void drawPlayer2(Graphics2D g2, ClientData cd, Coords pos) {
+        String nickname = cd.getName();
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
+        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
+
+        switch (cd.getDirection()) {
+            case S -> drawSkinSprite(pos, g2, 8, skinCounter, 0);
+            case W -> drawSkinSprite(pos, g2, 10, skinCounter, 0);
+            case E -> drawSkinSprite(pos, g2, 12, skinCounter, 0);
+            case N -> drawSkinSprite(pos, g2, 14, skinCounter, 0);
+            case SE, SW -> drawSkinSprite(pos, g2, 8, skinCounter, 1);
+            case NE, NW -> drawSkinSprite(pos, g2, 14, skinCounter, 1);
+        }
+    }
+
 
     private void drawSkinSprite(Coords c, Graphics2D g2, int index, int alternativeSkin, int diagonalMovement) {
         g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
@@ -216,5 +238,10 @@ public class PaintArea extends JComponent implements KeyListener {
 
     public void stopMusic(){
         sound.stop();
+    }
+
+    private void removePlayer(Graphics2D g2, ClientData cd){
+        if(!myClientData.checkIsAlive()){
+        }
     }
 }

@@ -18,6 +18,14 @@ public class ClientData implements Serializable {
     private static final int RIGHT_2 = 5;
     private static final int UP_LEFT = 6;
     private static final int UP_RIGHT = 7;
+    private static final int DOWN_LEFTRED = 8;
+    private static final int DOWN_RIGHTRED = 9;
+    private static final int LEFT_1RED = 10;
+    private static final int LEFT_2RED = 11;
+    private static final int RIGHT_1RED = 12;
+    private static final int RIGHT_2RED = 13;
+    private static final int UP_LEFTRED = 14;
+    private static final int UP_RIGHTRED = 15;
 
     public static final int MOVEMENT_W = 0;
     public static final int MOVEMENT_A = 1;
@@ -32,6 +40,7 @@ public class ClientData implements Serializable {
     private boolean[] availableMovements;
     private transient BufferedImage[] skin;
     private int ID;
+    private boolean isAlive;
 
 
     public ClientData(int ID, Coords coords, String name) {
@@ -48,6 +57,8 @@ public class ClientData implements Serializable {
         this.availableMovements = new boolean[4];
         this.skin = new BufferedImage[30];
         setSkinImages();
+        setSkinImagesRed();
+        isAlive = true;
     }
 
     public ClientData(ClientData cd){
@@ -72,6 +83,21 @@ public class ClientData implements Serializable {
             this.skin[RIGHT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_right_2.png")));
             this.skin[UP_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_1.png")));
             this.skin[UP_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_up_2.png")));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void setSkinImagesRed(){
+        try {
+            this.skin[DOWN_LEFTRED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_downRed_1.png")));
+            this.skin[DOWN_RIGHTRED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_downRed_2.png")));
+            this.skin[LEFT_1RED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_leftRed_1.png")));
+            this.skin[LEFT_2RED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_leftRed_2.png")));
+            this.skin[RIGHT_1RED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_rightRed_1.png")));
+            this.skin[RIGHT_2RED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_rightRed_2.png")));
+            this.skin[UP_LEFTRED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_upRed_1.png")));
+            this.skin[UP_RIGHTRED] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/player/walking/boy_upRed_2.png")));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -132,5 +158,9 @@ public class ClientData implements Serializable {
     @Override
     public String toString() {
         return "ClientData of ID=" + ID;
+    }
+
+    public boolean checkIsAlive(){
+        return false;
     }
 }

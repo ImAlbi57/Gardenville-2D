@@ -16,12 +16,15 @@ public class MapManager {
     public final Tile[] tileList;
     public int[][] mapTileNums;
 
+    public SuperObject objElement[] = new SuperObject[10];
+    public AssetSetter setter = new AssetSetter(this);
+
     public MapManager() {
         tileList = new Tile[numTiles];
         mapTileNums = new int[mapDim][mapDim];
-
         readMapData();
         getImages();
+        setter.setObject();
     }
 
     private void readMapData() {
