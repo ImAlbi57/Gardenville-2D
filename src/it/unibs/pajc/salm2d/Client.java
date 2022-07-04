@@ -88,7 +88,7 @@ public class Client {
             try {
                 this.out.writeObject(new ClientData(cd));
                 this.out.flush();
-                System.out.println(cd.getCoords());
+                //System.out.println(cd.getCoords());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,7 +114,6 @@ public class Client {
     }
 
     private void updatePlayer(ClientData cd){
-        System.out.println("Ricevuto da " + cd.getID());
         wb.updateClientData(cd);
     }
 }

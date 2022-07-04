@@ -7,7 +7,6 @@ import java.awt.event.KeyListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class PaintArea extends JComponent implements KeyListener {
@@ -16,16 +15,18 @@ public class PaintArea extends JComponent implements KeyListener {
     private ClientData myClientData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
+    private int halfTimeCounter;
     private int skinCounter;
     private CollisionChecker cCheck;
     Sound sound = new Sound();
-    Timer t, t1, t2;
+    Timer t, t1;
 
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
         this.myClientData = cd;
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
+        halfTimeCounter = 0;
         skinCounter = 0;
         playMusicLoop(Sound.EXTERNALSOUND);
 
@@ -37,16 +38,17 @@ public class PaintArea extends JComponent implements KeyListener {
         t.start();
 
         t1 = new Timer(250, (e) -> {
-            if(isMoving() && !isInInventory)
-                updateSkinMovement();
+            removeDeadPlayer();
+            if(isMoving() && !isInInventory){
+                updateTimeCounter();
+                if(myClientData.getSpeed() == 5 || halfTimeCounter == 0){
+                    updateSkinMovement();
+                    startSoundWalking();
+                }
+
+            }
         });
         t1.start();
-
-        t2 = new Timer(500, (e) -> {
-            if(isMoving())
-                startWalking();
-        });
-        t2.start();
 
         this.setFocusable(true);
         this.requestFocus();
@@ -91,12 +93,11 @@ public class PaintArea extends JComponent implements KeyListener {
         }
 
         g2.setColor(Color.RED);
-        for (Map.Entry<Integer, ClientData> cd : otherClientData.entrySet()) {
-            ClientData otherCd = cd.getValue();
+        for (ClientData otherCd : otherClientData.values()) {
             int relX = otherCd.getCoords().getX() - myClientData.getCoords().getX();
             int relY = otherCd.getCoords().getY() - myClientData.getCoords().getY();
             Coords relativePos = new Coords(relX, relY);
-            drawPlayer2(g2, otherCd, relativePos);
+            drawPlayer(g2, otherCd, relativePos, 1);
         }
 
         g2.setColor(Color.BLUE);
@@ -110,7 +111,7 @@ public class PaintArea extends JComponent implements KeyListener {
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
-        drawPlayer(g2, myClientData, Coords.ZERO);
+        drawPlayer(g2, myClientData, Coords.ZERO, 0);
 
         if(isInInventory){
             printInventory(g2);
@@ -128,32 +129,18 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.fill(roundedRectangle);
     }
 
-    private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos) {
+    private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos, int playerType) {
         String nickname = cd.getName();
         g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
         g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
 
         switch (cd.getDirection()) {
-            case S -> drawSkinSprite(pos, g2, 0, skinCounter, 0);
-            case W -> drawSkinSprite(pos, g2, 2, skinCounter, 0);
-            case E -> drawSkinSprite(pos, g2, 4, skinCounter, 0);
-            case N -> drawSkinSprite(pos, g2, 6, skinCounter, 0);
-            case SE, SW -> drawSkinSprite(pos, g2, 0, skinCounter, 1);
-            case NE, NW -> drawSkinSprite(pos, g2, 6, skinCounter, 1);
-        }
-    }
-    private void drawPlayer2(Graphics2D g2, ClientData cd, Coords pos) {
-        String nickname = cd.getName();
-        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
-        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
-
-        switch (cd.getDirection()) {
-            case S -> drawSkinSprite(pos, g2, 8, skinCounter, 0);
-            case W -> drawSkinSprite(pos, g2, 10, skinCounter, 0);
-            case E -> drawSkinSprite(pos, g2, 12, skinCounter, 0);
-            case N -> drawSkinSprite(pos, g2, 14, skinCounter, 0);
-            case SE, SW -> drawSkinSprite(pos, g2, 8, skinCounter, 1);
-            case NE, NW -> drawSkinSprite(pos, g2, 14, skinCounter, 1);
+            case S -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 0);
+            case W -> drawSkinSprite(pos, g2, 2 + playerType*8, skinCounter, 0);
+            case E -> drawSkinSprite(pos, g2, 4 + playerType*8, skinCounter, 0);
+            case N -> drawSkinSprite(pos, g2, 6 + playerType*8, skinCounter, 0);
+            case SE, SW -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 1);
+            case NE, NW -> drawSkinSprite(pos, g2, 6 + playerType*8, skinCounter, 1);
         }
     }
 
@@ -174,6 +161,10 @@ public class PaintArea extends JComponent implements KeyListener {
         if(keyControl.contains(""+KeyEvent.VK_D) && myClientData.isMovementAvailable(ClientData.MOVEMENT_D))
             myClientData.moveX(1);
 
+    }
+
+    private void updateTimeCounter() {
+        halfTimeCounter = 1 - halfTimeCounter;
     }
 
     private void updateSkinMovement(){
@@ -217,13 +208,9 @@ public class PaintArea extends JComponent implements KeyListener {
         myClientData.setSpeed(2);
     }
 
-    private void startWalking(){
+    private void startSoundWalking(){
         playMusic(Sound.WALKINGSOUND);
     }
-    // Sound Running
-    //private void startRunning(){
-    //    playMusic(Sound.RUNNINGSOUND);
-    //}
 
     public void playMusic(int i){
         sound.setFile(i);
@@ -240,8 +227,13 @@ public class PaintArea extends JComponent implements KeyListener {
         sound.stop();
     }
 
-    private void removePlayer(Graphics2D g2, ClientData cd){
-        if(!myClientData.checkIsAlive()){
+    private void removeDeadPlayer(){
+        for (ClientData cd : otherClientData.values()) {
+            if(!cd.isAlive()){
+                System.out.printf("Player %d rimosso\n", cd.getID());
+                otherClientData.remove(cd.getID());
+                return;
+            }
         }
     }
 }

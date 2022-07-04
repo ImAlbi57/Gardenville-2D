@@ -63,9 +63,10 @@ public class ClientData implements Serializable {
 
     public ClientData(ClientData cd){
         this.ID = cd.getID();
-        this.name = new String(cd.getName());
+        this.name = cd.getName();
         this.coords = new Coords(cd.getCoords());
         this.direction = Direction.valueOf(cd.getDirection().toString());
+        this.isAlive = cd.isAlive();
     }
 
     public void resetAvailableMovements(){
@@ -155,12 +156,24 @@ public class ClientData implements Serializable {
         return ID;
     }
 
+    public void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
+    public boolean isAlive(){
+        return isAlive;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientData that = (ClientData) o;
+        return ID == that.ID;
+    }
+
     @Override
     public String toString() {
         return "ClientData of ID=" + ID;
-    }
-
-    public boolean checkIsAlive(){
-        return false;
     }
 }
