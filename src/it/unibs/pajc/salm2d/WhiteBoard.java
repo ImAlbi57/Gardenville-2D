@@ -3,6 +3,8 @@ package it.unibs.pajc.salm2d;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class WhiteBoard {
     public JFrame frame;
@@ -55,6 +57,13 @@ public class WhiteBoard {
 
                     frame.setVisible(true);
                 }
+            }
+        });
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                paint.resetKeyPressed();
             }
         });
 

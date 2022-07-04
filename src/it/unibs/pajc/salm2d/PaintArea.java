@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 public class PaintArea extends JComponent implements KeyListener {
 
+    private static final Coords scale = new Coords(1600, 900);
     private ClientData myClientData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
@@ -32,7 +34,7 @@ public class PaintArea extends JComponent implements KeyListener {
         t.start();
 
         Timer t1 = new Timer(250, (e) -> {
-            if(isMoving())
+            if(isMoving() && !isInInventory)
                 updateSkinMovement();
         });
         t1.start();
@@ -62,7 +64,6 @@ public class PaintArea extends JComponent implements KeyListener {
         int w = getWidth();
         int h = getHeight();
 
-        Coords scale = new Coords(1600, 900);
         double s = Math.min(w /(double)scale.getX(), h /(double)scale.getY());
 
         g2.scale(s, s);
@@ -93,9 +94,27 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
         drawPlayer(g2, myClientData, Coords.ZERO);
+
+        if(isInInventory){
+            printInventory(g2);
+        }
+    }
+
+    private void printInventory(Graphics2D g2) {
+        //blur background
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX(), scale.getY());
+
+        //print inventory popup
+        g2.setColor(new Color(250, 250, 250, 150));
+        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-500, -350, 1000, 700, 50, 50);
+        g2.fill(roundedRectangle);
     }
 
     private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos) {
+        String nickname = cd.getName();
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
+        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
         switch (cd.getDirection()) {
             case S -> drawSkinSprite(pos, g2, 0, skinCounter, 0);
             case W -> drawSkinSprite(pos, g2, 2, skinCounter, 0);
@@ -110,8 +129,9 @@ public class PaintArea extends JComponent implements KeyListener {
         g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
     }
 
-
     private void updateCoords() {
+        if(isInInventory) return;
+
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);
         if(keyControl.contains(""+KeyEvent.VK_A) && myClientData.isMovementAvailable(ClientData.MOVEMENT_A))
@@ -131,10 +151,14 @@ public class PaintArea extends JComponent implements KeyListener {
     }
 
     public ArrayList<String> keyControl = new ArrayList<>();
+    private boolean isInInventory = false;
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
             myClientData.setSpeed(5);
+
+        if(e.getKeyCode() == KeyEvent.VK_E)
+            isInInventory = !isInInventory;
 
         if(!keyControl.contains(""+e.getKeyCode()))
             keyControl.add(""+e.getKeyCode());
@@ -149,7 +173,10 @@ public class PaintArea extends JComponent implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        // NON UTILIZZARE
+    public void keyTyped(KeyEvent e) {}
+
+    public void resetKeyPressed(){
+        keyControl.clear();
+        myClientData.setSpeed(2);
     }
 }
