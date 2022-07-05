@@ -8,6 +8,59 @@ public class CollisionChecker {
         this.cd = cd;
         this.mm = mm;
     }
+    //Metodo che mi ha fatto smadonnare
+    public int checkObjectCollision(ClientData client){
+        int index = 999;
+
+        for(int i = 43; i < 44; i++){
+            if(mm.tileList[i] != null){
+                client.solidArea.x = client.getCoords().getX() + client.solidArea.x;
+                client.solidArea.y = client.getCoords().getY() + client.solidArea.y;
+                mm.tileList[i].solidArea.x = - mm.tileList[i].getX() - mm.tileList[i].solidArea.x;
+                mm.tileList[i].solidArea.y =  mm.tileList[i].getY() + mm.tileList[i].solidArea.y;
+
+                System.out.println("player X --- " + client.getCoords().getX());
+                System.out.println("player Y --- " + client.getCoords().getY());
+                System.out.println("item X --- " + mm.tileList[i].solidArea.x);
+                System.out.println("item Y --- " + mm.tileList[i].solidArea.y);
+
+                //Direction d = client.getDirection();
+                //if(d != null){
+                //    //client.resetAvailableMovements();
+                //    if(d.equals(Direction.N) || d.equals(Direction.NE) || d.equals(Direction.NW)) {
+                //        client.solidArea.y -= client.getSpeed();
+                //        if(client.solidArea.intersects(mm.tileList[i].solidArea)){
+                //            System.out.println("up collision");
+                //        }
+                //    }
+                //    if(d.equals(Direction.W) || d.equals(Direction.NW) || d.equals(Direction.SW)) {
+                //        client.solidArea.x -= client.getSpeed();
+                //        if(client.solidArea.intersects(mm.tileList[i].solidArea)){
+                //            System.out.println("left collision");
+                //        }
+                //    }
+                //    if(d.equals(Direction.S) || d.equals(Direction.SE) || d.equals(Direction.SW) ){
+                //        client.solidArea.y += client.getSpeed();
+                //        if(client.solidArea.intersects(mm.tileList[i].solidArea)){
+                //            System.out.println("down collision");
+                //        }
+                //    }
+                //    if (d.equals(Direction.E) || d.equals(Direction.NE) ||d.equals(Direction.SE)) {
+                //        client.solidArea.x += client.getSpeed();
+                //        if(client.solidArea.intersects(mm.tileList[i].solidArea)){
+                //            System.out.println("right collision");
+                //        }
+                //    }
+                //}
+                client.solidArea.x = client.solidAreaDefaultX;
+                client.solidArea.y = client.solidAreaDefaultY;
+                mm.tileList[i].solidArea.x = mm.tileList[i].solidAreaDefaultX;
+                mm.tileList[i].solidArea.y = mm.tileList[i].solidAreaDefaultY;
+
+            }
+        }
+        return index;
+    }
 
     public void checkTileCollision(ClientData client) {
 

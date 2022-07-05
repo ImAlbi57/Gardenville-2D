@@ -85,13 +85,6 @@ public class PaintArea extends JComponent implements KeyListener {
 
         mm.drawMap(g2, -myClientData.getCoords().getX(), -myClientData.getCoords().getY());
 
-        //Draw OBJ
-        for(int i = 0; i < mm.objElement.length; i++){
-            if(mm.objElement[i] != null){
-                mm.objElement[i].draw(g2, mm);
-            }
-        }
-
         g2.setColor(Color.RED);
         for (ClientData otherCd : otherClientData.values()) {
             int relX = otherCd.getCoords().getX() - myClientData.getCoords().getX();
@@ -173,6 +166,9 @@ public class PaintArea extends JComponent implements KeyListener {
 
     private void checkCollision(){
         cCheck.checkTileCollision(myClientData);
+
+        //Richiamo per il metodo nella classe MapManager
+        //cCheck.checkObjectCollision(myClientData);
     }
 
     public ArrayList<String> keyControl = new ArrayList<>();
