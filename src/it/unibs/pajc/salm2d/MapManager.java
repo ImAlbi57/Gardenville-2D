@@ -17,6 +17,9 @@ public class MapManager {
     public int[][][] mapTileNums;
     public int numKeys;
 
+    public int counterKey;
+    public int counterDoor;
+
     public MapManager() {
         tileList = new Tile[numTiles];
         mapTileNums = new int[mapDim][mapDim][2];
@@ -33,6 +36,12 @@ public class MapManager {
                 for (int j = 0; j < 50; j++) {
                     mapTileNums[j][i][0] = Integer.parseInt(lineParts[j]);
                     mapTileNums[j][i][1] = 0; //NORMAL
+                    if(mapTileNums[j][i][0] == 43){
+                        counterKey++;
+                    }
+                    if(mapTileNums[j][i][0] == 44){
+                        counterDoor++;
+                    }
                 }
             }
             br.close();
@@ -81,15 +90,14 @@ public class MapManager {
             tileList[42] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/hut.png"))), true);
             tileList[43] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/key.png"))), true);
             tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), true);
-            tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door1.png"))), true);
+            tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/fakedoor.png"))), true);
             tileList[46] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), true);
-            tileList[47] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), false);
+            tileList[47] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/fakedoor.png"))), false);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-
     public void drawMap(Graphics2D g2, int startingX, int startingY){
         for (int i = 0; i < mapDim; i++) {
             for (int j = 0; j < mapDim; j++) {

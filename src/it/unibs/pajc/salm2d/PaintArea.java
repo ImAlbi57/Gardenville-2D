@@ -141,7 +141,9 @@ public class PaintArea extends JComponent implements KeyListener{
         if(isInPause){
             printPauseMenu(g2);
         }
-        printNoKeyDialog(g2);
+        if(cCheck.getNoKeyCollision()){
+            printNoKeyDialog(g2);
+        }
         printHUDPlayer(g2);
     }
 
@@ -203,11 +205,13 @@ public class PaintArea extends JComponent implements KeyListener{
     private void printHUDPlayer(Graphics2D g2){
         String[] info = new String[10];
         info[0] = ""+mm.numKeys;
+        info[1] = ""+cCheck.openDoor;
         g2.setColor(new Color(0, 0, 0, 200));
-        Rectangle rectHUD = new Rectangle(-scale.getX()/2, -scale.getY()/2, 250, 300);
+        Rectangle rectHUD = new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 20, 250, 300);
         g2.fill(rectHUD);
         g2.setColor(Color.WHITE);
-        drawCenteredString(g2 , "Chiavi: " + info[0], new Rectangle(-scale.getX()/2, -scale.getY()/2 + 40, 250, 10) , font);
+        drawCenteredString(g2 , "Chiavi: " + info[0] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 22 , -scale.getY()/2 + 40, 250, 10) , font);
+        drawCenteredString(g2 , "Porte Aperte: " + info[1] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 80, 250, 10) , font);
     }
 
     public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
@@ -255,6 +259,7 @@ public class PaintArea extends JComponent implements KeyListener{
     private void updateCoords() {
         if(isInInventory) return;
         if(isInPause) return;
+        if(cCheck.getNoKeyCollision()) return;
 
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);

@@ -3,7 +3,9 @@ package it.unibs.pajc.salm2d;
 public class CollisionChecker {
     MapManager mm;
     ClientData cd;
+    Sound sound = new Sound();
     private boolean noKeyDoorCollision = false;
+    public int openDoor;
 
     public CollisionChecker(MapManager mm, ClientData cd) {
         this.cd = cd;
@@ -65,18 +67,22 @@ public class CollisionChecker {
             return;
         mm.numKeys++;
         map[i][j][1] = 1;
+        playMusic(6);
         System.out.println("CHIAVE RACCOLTA");
     }
 
     private void doorCollision(int[][][] map, int i, int j){
-        if(map[i][j][1] == 1)
+        if(map[i][j][1] == 1){
             return;
+        }
         if(mm.numKeys <= 0){
             noKeyDoorCollision = true;
             return;
         }
+        openDoor++;
         mm.numKeys--;
         map[i][j][1] = 1;
+        playMusic(5);
         System.out.println("PORTA SBLOCCATA");
     }
 
@@ -86,5 +92,10 @@ public class CollisionChecker {
 
     public void resetNoKeyCollision() {
         noKeyDoorCollision = false;
+    }
+
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
     }
 }
