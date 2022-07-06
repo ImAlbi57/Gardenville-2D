@@ -45,6 +45,7 @@ public class PaintArea extends JComponent implements KeyListener{
 
         t1 = new Timer(250, (e) -> {
             removeDeadPlayer();
+            checkStamina();
             if(isMoving() && (!isInInventory || !isInPause)){
                 updateTimeCounter();
                 if(myClientData.getSpeed() == 5 || halfTimeCounter == 0){
@@ -206,12 +207,14 @@ public class PaintArea extends JComponent implements KeyListener{
         String[] info = new String[10];
         info[0] = ""+mm.numKeys;
         info[1] = ""+cCheck.openDoor;
+        info[2] = ""+myClientData.getStamina();
         g2.setColor(new Color(0, 0, 0, 200));
         Rectangle rectHUD = new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 20, 250, 300);
         g2.fill(rectHUD);
         g2.setColor(Color.WHITE);
         drawCenteredString(g2 , "Chiavi: " + info[0] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 22 , -scale.getY()/2 + 40, 250, 10) , font);
         drawCenteredString(g2 , "Porte Aperte: " + info[1] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 80, 250, 10) , font);
+        drawCenteredString(g2 , "Stamina: " + info[2] + "/" + 100, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 120, 250, 10) , font);
     }
 
     public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
@@ -269,7 +272,25 @@ public class PaintArea extends JComponent implements KeyListener{
             myClientData.moveY(1);
         if(keyControl.contains(""+KeyEvent.VK_D) && myClientData.isMovementAvailable(ClientData.MOVEMENT_D))
             myClientData.moveX(1);
+        if(keyControl.contains(""+KeyEvent.VK_SHIFT) && myClientData.getStamina() == 0)
+            myClientData.setSpeed(2);
+    }
 
+    private void checkStamina(){
+        if(keyControl.contains(""+KeyEvent.VK_SHIFT)){
+            if(myClientData.getStamina() >= 1){
+                myClientData.setStamina(myClientData.getStamina()-1);
+                System.out.println(myClientData.getStamina());
+            }
+            else
+                System.out.println("Stamina finita");
+        }
+        else{
+            if(myClientData.getStamina() <= 99) {
+                myClientData.setStamina(myClientData.getStamina() + 1);
+                System.out.println(myClientData.getStamina());
+            }
+        }
     }
 
     private void updateTimeCounter() {
@@ -291,6 +312,7 @@ public class PaintArea extends JComponent implements KeyListener{
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
             myClientData.setSpeed(5);
+
 
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
             isInPause = !isInPause;

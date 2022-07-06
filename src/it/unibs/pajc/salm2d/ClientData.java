@@ -42,6 +42,8 @@ public class ClientData implements Serializable {
     private int ID;
     private boolean isAlive;
 
+    private int stamina = 100;
+
 
     public ClientData(int ID, Coords coords, String name) {
         this.ID = ID;
@@ -166,5 +168,13 @@ public class ClientData implements Serializable {
     @Override
     public String toString() {
         return "ClientData of ID=" + ID;
+    }
+
+    public int getStamina() {
+        return stamina;
+    }
+
+    public void setStamina(int stamina) {
+        this.stamina = stamina;
     }
 }
