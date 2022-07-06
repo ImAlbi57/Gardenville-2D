@@ -14,11 +14,13 @@ public class MapManager {
     public static final int tileDim = 128;
 
     public final Tile[] tileList;
-    public int[][] mapTileNums;
+    public int[][][] mapTileNums;
+    public int numKeys;
 
     public MapManager() {
         tileList = new Tile[numTiles];
-        mapTileNums = new int[mapDim][mapDim];
+        mapTileNums = new int[mapDim][mapDim][2];
+        numKeys = 0;
         readMapData();
         getImages();
     }
@@ -29,7 +31,8 @@ public class MapManager {
             for (int i = 0; i < 50; i++) {
                 String[] lineParts = br.readLine().split(" ");
                 for (int j = 0; j < 50; j++) {
-                    mapTileNums[i][j] = Integer.parseInt(lineParts[j]);
+                    mapTileNums[i][j][0] = Integer.parseInt(lineParts[j]);
+                    mapTileNums[i][j][1] = 0; //NORMAL
                 }
             }
             br.close();
@@ -76,8 +79,8 @@ public class MapManager {
             tileList[40] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/wall.png"))), true);
             tileList[41] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/tree.png"))), true);
             tileList[42] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/hut.png"))), true);
-            tileList[43] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/key.png"))), false);
-            tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), false);
+            tileList[43] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/key.png"))), true);
+            tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), true);
             tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), false);
 
         } catch (IOException e) {
@@ -89,23 +92,15 @@ public class MapManager {
         for (int i = 0; i < mapDim; i++) {
             for (int j = 0; j < mapDim; j++) {
                 drawTile(g2, mapTileNums[i][j], startingX + i*tileDim, startingY + j*tileDim);
-                //if(mapTileNums[i][j] == 43){
-                //    /* Modo per settare x del tile della porta -> */ tileList[43].setX(startingX + i*tileDim);
-                //    //System.out.println(i*tileDim);
-                //    /* Modo per settare y del tile della porta -> */ tileList[43].setY(startingY + j*tileDim);
-                //    //System.out.println(j*tileDim);
-                //}
             }
         }
     }
 
-    private void drawTile(Graphics2D g2, int tileNum, int x, int y) {
-        if(tileNum == 43){
-            g2.drawImage(tileList[43].getImg(), x, y, this.tileDim, this.tileDim, null);
+    private void drawTile(Graphics2D g2, int tileNum[], int x, int y) {
+        if(tileNum[0] == 43 || tileNum[0] == 44){
+            g2.drawImage(tileList[10].getImg(), x, y, this.tileDim, this.tileDim, null);
         }
-        if(tileNum == 44){
-            g2.drawImage(tileList[44].getImg(), x, y, this.tileDim, this.tileDim, null);
-        }
-        g2.drawImage(tileList[tileNum].getImg(), x, y, this.tileDim, this.tileDim, null);
+        if(tileNum[1] == 0)
+            g2.drawImage(tileList[tileNum[0]].getImg(), x, y, this.tileDim, this.tileDim, null);
     }
 }

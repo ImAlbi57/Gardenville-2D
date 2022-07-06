@@ -152,7 +152,7 @@ public class PaintArea extends JComponent implements KeyListener{
     private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos, int playerType) {
         String nickname = cd.getName();
         g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
-        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
+        g2.drawString(nickname, pos.getX() + 20 - nickname.length()*8, pos.getY() - 10);
 
         switch (cd.getDirection()) {
             case S -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 0);
@@ -200,9 +200,6 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void checkCollision(){
         cCheck.checkTileCollision(myClientData);
-
-        //Richiamo per il metodo nella classe MapManager
-        //cCheck.checkObjectCollision(myClientData);
     }
 
     public ArrayList<String> keyControl = new ArrayList<>();

@@ -31,12 +31,12 @@ public class ClientData implements Serializable {
     public static final int MOVEMENT_A = 1;
     public static final int MOVEMENT_S = 2;
     public static final int MOVEMENT_D = 3;
+    public static final Rectangle hitboxArea = new Rectangle(14, 16, 32, 32);
 
     private Coords coords;
     private String name;
     private Direction direction;
     private int speed;
-    public Rectangle solidArea;
     private boolean[] availableMovements;
     private transient BufferedImage[] skin;
     private int ID;
@@ -49,11 +49,6 @@ public class ClientData implements Serializable {
         this.name = name;
         this.direction = Direction.S;
         this.speed = 2;
-        this.solidArea = new Rectangle();
-        this.solidArea.x = 14;
-        this.solidArea.y = 16;
-        this.solidArea.width = 32;
-        this.solidArea.height = 32;
         this.availableMovements = new boolean[4];
         this.skin = new BufferedImage[30];
         setSkinImages();
@@ -146,10 +141,6 @@ public class ClientData implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getID() {
