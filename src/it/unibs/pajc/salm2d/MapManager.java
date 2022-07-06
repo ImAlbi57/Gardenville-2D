@@ -31,8 +31,8 @@ public class MapManager {
             for (int i = 0; i < 50; i++) {
                 String[] lineParts = br.readLine().split(" ");
                 for (int j = 0; j < 50; j++) {
-                    mapTileNums[i][j][0] = Integer.parseInt(lineParts[j]);
-                    mapTileNums[i][j][1] = 0; //NORMAL
+                    mapTileNums[j][i][0] = Integer.parseInt(lineParts[j]);
+                    mapTileNums[j][i][1] = 0; //NORMAL
                 }
             }
             br.close();
@@ -51,29 +51,29 @@ public class MapManager {
             tileList[12] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water00.png"))), true);
             tileList[13] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water01.png"))), true);
             tileList[14] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water02.png"))), true);
-            tileList[15] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water05.png"))), true);
-            tileList[16] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water07.png"))), true);
-            tileList[17] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water03.png"))), true);
-            tileList[18] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water08.png"))), true);
-            tileList[19] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water04.png"))), true);
-            tileList[20] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water06.png"))), true);
+            tileList[15] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water03.png"))), true);
+            tileList[16] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water04.png"))), true);
+            tileList[17] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water05.png"))), true);
+            tileList[18] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water06.png"))), true);
+            tileList[19] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water07.png"))), true);
+            tileList[20] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water08.png"))), true);
             tileList[21] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water09.png"))), true);
             tileList[22] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water10.png"))), true);
-            tileList[23] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water12.png"))), true);
-            tileList[24] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water11.png"))), true);
+            tileList[23] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water11.png"))), true);
+            tileList[24] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water12.png"))), true);
             tileList[25] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/water13.png"))), true);
             tileList[26] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road00.png"))), false);
             tileList[27] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road01.png"))), false);
-            tileList[28] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road04.png"))), false);
-            tileList[29] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road06.png"))), false);
-            tileList[30] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road02.png"))), false);
-            tileList[31] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road07.png"))), false);
-            tileList[32] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road03.png"))), false);
-            tileList[33] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road05.png"))), false);
+            tileList[28] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road02.png"))), false);
+            tileList[29] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road03.png"))), false);
+            tileList[30] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road04.png"))), false);
+            tileList[31] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road05.png"))), false);
+            tileList[32] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road06.png"))), false);
+            tileList[33] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road07.png"))), false);
             tileList[34] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road08.png"))), false);
             tileList[35] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road09.png"))), false);
-            tileList[36] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road11.png"))), false);
-            tileList[37] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road10.png"))), false);
+            tileList[36] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road10.png"))), false);
+            tileList[37] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road11.png"))), false);
             tileList[38] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/road12.png"))), false);
             tileList[39] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/earth.png"))), false);
             tileList[40] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/wall.png"))), true);
