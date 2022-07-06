@@ -105,6 +105,8 @@ public class ClientHandler implements Runnable {
     }
 
     public boolean isAlive() {
+        if(myClientData == null)
+            return false;
         return myClientData.isAlive();
     }
 }

@@ -11,8 +11,10 @@ import java.util.HashMap;
 public class PaintArea extends JComponent implements KeyListener{
 
     private static final Coords scale = new Coords(1600, 900);
+    private static final Font font = new Font("TimesRoman", Font.PLAIN, 30);
+
     private ClientData myClientData;
-    //private NpcData myNpcData;
+    private NpcData myNpcData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
     private int halfTimeCounter;
@@ -25,7 +27,7 @@ public class PaintArea extends JComponent implements KeyListener{
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
         this.myClientData = cd;
-        //this.myNpcData = new NpcData(new Coords(10, 10), Direction.S);
+        this.myNpcData = new NpcData(new Coords(2725,2971), Direction.S);
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
         halfTimeCounter = 0;
@@ -95,7 +97,6 @@ public class PaintArea extends JComponent implements KeyListener{
             drawPlayer(g2, otherCd, relativePos, 1);
         }
 
-        g2.setColor(Color.BLUE);
 
         boolean up = keyControl.contains(""+KeyEvent.VK_W);
         boolean down = keyControl.contains(""+KeyEvent.VK_S);
@@ -106,8 +107,14 @@ public class PaintArea extends JComponent implements KeyListener{
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
+        /*for (ClientData otherCd : otherClientData.values())*/ {
+            int relX = myNpcData.getCoords().getX() - myClientData.getCoords().getX();
+            int relY = myNpcData.getCoords().getY() - myClientData.getCoords().getY();
+            Coords relativePos = new Coords(relX, relY);
+            drawNpc(g2, myNpcData, relativePos);
+        }
+
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
-        //drawNpc(g2, myNpcData, Coords.ZERO);
 
         if(isInInventory){
             printInventory(g2);
@@ -189,8 +196,9 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos, int playerType) {
         String nickname = cd.getName();
-        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
-        g2.drawString(nickname, pos.getX() + 20 - nickname.length()*8, pos.getY() - 10);
+        g2.setColor(Color.BLUE);
+
+        drawCenteredString(g2, nickname, new Rectangle(pos.getX(), pos.getY()-30, 60, 20), font);
 
         switch (cd.getDirection()) {
             case S -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 0);
@@ -204,8 +212,10 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void drawNpc(Graphics2D g2, NpcData npc, Coords pos){
         String nickname = "Merlino";
-        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
-        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
+        g2.setColor(Color.WHITE);
+
+        drawCenteredString(g2, nickname, new Rectangle(pos.getX(), pos.getY()-30, 60, 20), font);
+        g2.drawImage(npc.getSkinImage(0), pos.getX(), pos.getY(), 60, 60, null);
     }
 
 
