@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class PaintArea extends JComponent implements KeyListener{
@@ -14,20 +15,21 @@ public class PaintArea extends JComponent implements KeyListener{
     private static final Font font = new Font("TimesRoman", Font.PLAIN, 30);
 
     private ClientData myClientData;
-    private NpcData myNpcData;
+    private HashMap<NpcData, Path> myNpcData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
     private int halfTimeCounter;
     private int skinCounter;
     private CollisionChecker cCheck;
     Sound sound = new Sound();
-    Timer t, t1;
+    Timer t, t1, t2;
 
 
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
         this.myClientData = cd;
-        this.myNpcData = new NpcData(new Coords(2725,2971), Direction.S);
+        this.myNpcData = new HashMap<>();
+        initNPCs();
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
         halfTimeCounter = 0;
@@ -54,9 +56,26 @@ public class PaintArea extends JComponent implements KeyListener{
         });
         t1.start();
 
+        t2 = new Timer(10, (e) -> updateNpcMovement());
+        t2.start();
+
         this.setFocusable(true);
         this.requestFocus();
         this.addKeyListener(this);
+    }
+
+    private void updateNpcMovement() {
+        for (Map.Entry<NpcData, Path> npcValues : myNpcData.entrySet()) {
+            NpcData npc = npcValues.getKey();
+            Path path = npcValues.getValue();
+            npc.setCoords(path.stepNext(npc.getCoords()));
+            //System.out.println("Sposto il coglione a " + npc.getCoords());
+        }
+    }
+
+    private void initNPCs() {
+        Coords[] cs = new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)};
+        myNpcData.put(new NpcData(cs[0], Direction.S), new Path(cs));
     }
 
     private boolean isMoving() {
@@ -107,11 +126,11 @@ public class PaintArea extends JComponent implements KeyListener{
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
-        /*for (ClientData otherCd : otherClientData.values())*/ {
-            int relX = myNpcData.getCoords().getX() - myClientData.getCoords().getX();
-            int relY = myNpcData.getCoords().getY() - myClientData.getCoords().getY();
+        for (NpcData npc : myNpcData.keySet()) {
+            int relX = npc.getCoords().getX() - myClientData.getCoords().getX();
+            int relY = npc.getCoords().getY() - myClientData.getCoords().getY();
             Coords relativePos = new Coords(relX, relY);
-            drawNpc(g2, myNpcData, relativePos);
+            drawNpc(g2, npc, relativePos);
         }
 
         drawPlayer(g2, myClientData, Coords.ZERO, 0);

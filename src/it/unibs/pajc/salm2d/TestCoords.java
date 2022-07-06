@@ -17,8 +17,8 @@ public class TestCoords {
         //}
 
         Path p = new Path(new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(1, 1), new Coords(1, 0)});
-        while(true){
-            System.out.println(p.stepNext());
-        }
+        //while(true){
+        //    System.out.println(p.stepNext());
+        //}
     }
 }

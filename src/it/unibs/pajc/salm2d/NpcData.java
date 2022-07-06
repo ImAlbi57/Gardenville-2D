@@ -29,13 +29,13 @@ public class NpcData{
     public void setSkinImages() {
         try {
             this.skin[DOWN_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_down_1.png")));
-            //this.skin[DOWN_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_down_2.png")));
-            //this.skin[LEFT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_left_1.png")));
-            //this.skin[LEFT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_left_2.png")));
-            //this.skin[RIGHT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_right_1.png")));
-            //this.skin[RIGHT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_right_2.png")));
-            //this.skin[UP_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_up_1.png")));
-            //this.skin[UP_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_up_2.png")));
+            this.skin[DOWN_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_down_2.png")));
+            this.skin[LEFT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_left_1.png")));
+            this.skin[LEFT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_left_2.png")));
+            this.skin[RIGHT_1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_right_1.png")));
+            this.skin[RIGHT_2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_right_2.png")));
+            this.skin[UP_LEFT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_up_1.png")));
+            this.skin[UP_RIGHT] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/npc/oldman_up_2.png")));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -47,5 +47,9 @@ public class NpcData{
 
     public Coords getCoords() {
         return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
     }
 }
