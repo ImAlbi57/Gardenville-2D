@@ -2,17 +2,17 @@ package it.unibs.pajc.salm2d;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class PaintArea extends JComponent implements KeyListener {
+public class PaintArea extends JComponent implements KeyListener{
 
     private static final Coords scale = new Coords(1600, 900);
     private ClientData myClientData;
+    //private NpcData myNpcData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
     private int halfTimeCounter;
@@ -21,9 +21,11 @@ public class PaintArea extends JComponent implements KeyListener {
     Sound sound = new Sound();
     Timer t, t1;
 
+
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
         this.myClientData = cd;
+        //this.myNpcData = new NpcData(new Coords(10, 10), Direction.S);
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
         halfTimeCounter = 0;
@@ -39,7 +41,7 @@ public class PaintArea extends JComponent implements KeyListener {
 
         t1 = new Timer(250, (e) -> {
             removeDeadPlayer();
-            if(isMoving() && !isInInventory){
+            if(isMoving() && (!isInInventory || !isInPause)){
                 updateTimeCounter();
                 if(myClientData.getSpeed() == 5 || halfTimeCounter == 0){
                     updateSkinMovement();
@@ -105,10 +107,35 @@ public class PaintArea extends JComponent implements KeyListener {
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
+        //drawNpc(g2, myNpcData, Coords.ZERO);
 
         if(isInInventory){
             printInventory(g2);
         }
+        if(isInPause){
+            printPauseMenu(g2);
+        }
+    }
+
+    private void printPauseMenu(Graphics2D g2){
+        Font f = new Font("SansSerif", Font.BOLD, 150);
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.setFont(f);
+        String state = "PAUSA";
+        g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
+        g2.setColor(Color.WHITE);
+        g2.drawString(state, -225, 75);
+
+
+        g2.fillRect(-225, 150, 200, 80);
+        Font f1 = new Font("SansSerif", Font.BOLD, 50);
+        g2.setFont(f1);
+        g2.setColor(Color.BLACK);
+        String quit = "QUIT";
+        g2.drawString(quit, -190, 210);
+
+        //Rendere quit utilizzabile
+
     }
 
     private void printInventory(Graphics2D g2) {
@@ -137,6 +164,12 @@ public class PaintArea extends JComponent implements KeyListener {
         }
     }
 
+    private void drawNpc(Graphics2D g2, NpcData npc, Coords pos){
+        String nickname = "Merlino";
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
+        g2.drawString(nickname, pos.getX() - nickname.length()*5, pos.getY() - 10);
+    }
+
 
     private void drawSkinSprite(Coords c, Graphics2D g2, int index, int alternativeSkin, int diagonalMovement) {
         g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
@@ -144,6 +177,7 @@ public class PaintArea extends JComponent implements KeyListener {
 
     private void updateCoords() {
         if(isInInventory) return;
+        if(isInPause) return;
 
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);
@@ -173,10 +207,14 @@ public class PaintArea extends JComponent implements KeyListener {
 
     public ArrayList<String> keyControl = new ArrayList<>();
     private boolean isInInventory = false;
+    private boolean isInPause = false;
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
             myClientData.setSpeed(5);
+
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+            isInPause = !isInPause;
 
         if(e.getKeyCode() == KeyEvent.VK_E)
             isInInventory = !isInInventory;
