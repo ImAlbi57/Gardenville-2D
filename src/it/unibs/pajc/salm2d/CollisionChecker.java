@@ -3,6 +3,7 @@ package it.unibs.pajc.salm2d;
 public class CollisionChecker {
     MapManager mm;
     ClientData cd;
+    private boolean noKeyDoorCollision = false;
 
     public CollisionChecker(MapManager mm, ClientData cd) {
         this.cd = cd;
@@ -48,8 +49,9 @@ public class CollisionChecker {
         int tileNum2 = mm.mapTileNums[i2][j2][0];
         if(tileNum1 == 43) keyCollision(mm.mapTileNums, i1, j1);
         if(tileNum2 == 43) keyCollision(mm.mapTileNums, i2, j2);
-        if(tileNum1 == 44) doorCollision(mm.mapTileNums, i1, j1);
-        if(tileNum2 == 44) doorCollision(mm.mapTileNums, i2, j2);
+        if(tileNum1 == 44 || tileNum1 == 45) doorCollision(mm.mapTileNums, i1, j1);
+        if(tileNum2 == 44 || tileNum2 == 45) doorCollision(mm.mapTileNums, i2, j2);
+
         boolean canGoThru =
                 (!mm.tileList[tileNum1].isCollidable &&
                 !mm.tileList[tileNum2].isCollidable) ||
@@ -67,10 +69,22 @@ public class CollisionChecker {
     }
 
     private void doorCollision(int[][][] map, int i, int j){
-        if(map[i][j][1] == 1 || mm.numKeys <= 0)
+        if(map[i][j][1] == 1)
             return;
+        if(mm.numKeys <= 0){
+            noKeyDoorCollision = true;
+            return;
+        }
         mm.numKeys--;
         map[i][j][1] = 1;
         System.out.println("PORTA SBLOCCATA");
+    }
+
+    public boolean getNoKeyCollision() {
+        return noKeyDoorCollision;
+    }
+
+    public void resetNoKeyCollision() {
+        noKeyDoorCollision = false;
     }
 }

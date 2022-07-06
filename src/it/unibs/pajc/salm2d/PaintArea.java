@@ -115,6 +115,7 @@ public class PaintArea extends JComponent implements KeyListener{
         if(isInPause){
             printPauseMenu(g2);
         }
+        printNoKeyDialog(g2);
     }
 
     private void printPauseMenu(Graphics2D g2){
@@ -141,12 +142,49 @@ public class PaintArea extends JComponent implements KeyListener{
     private void printInventory(Graphics2D g2) {
         //blur background
         g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX(), scale.getY());
+        g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
 
         //print inventory popup
         g2.setColor(new Color(250, 250, 250, 150));
         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-500, -350, 1000, 700, 50, 50);
         g2.fill(roundedRectangle);
+    }
+
+    private void printNoKeyDialog(Graphics2D g2){
+        if(cCheck.getNoKeyCollision()){
+            //Font
+            Font f1 = new Font("SansSerif", Font.BOLD, 25);
+            //Blur
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
+            //Rect
+            g2.setColor(new Color(250, 250, 250, 255));
+            RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-350, -175, 700, 350, 25, 25);
+            g2.fill(roundedRectangle);
+            //String
+            g2.setFont(f1);
+            g2.setColor(Color.BLACK);
+            String noKeyString1 = "Non disponi della chiave per aprire questa porta!";
+            String noKeyString2 = "Cercala per la mappa e riprova";
+            //g2.drawString(noKeyString1, -200, -50);
+            //g2.drawString(noKeyString2, -200, 50);
+            drawCenteredString(g2 , noKeyString1, new Rectangle(-350, -225, 700, 350), f1);
+            drawCenteredString(g2 , noKeyString2, new Rectangle(-350, -125, 700, 350), f1);
+
+        }
+    }
+
+    public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
+        // Get the FontMetrics
+        FontMetrics metrics = g2.getFontMetrics(font);
+        // Determine the X coordinate for the text
+        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        // Set the font
+        g2.setFont(font);
+        // Draw the String
+        g2.drawString(text, x, y);
     }
 
     private void drawPlayer(Graphics2D g2, ClientData cd, Coords pos, int playerType) {
@@ -213,13 +251,14 @@ public class PaintArea extends JComponent implements KeyListener{
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
             isInPause = !isInPause;
 
+        if(e.getKeyCode() == KeyEvent.VK_ENTER)
+            cCheck.resetNoKeyCollision();
+
         if(e.getKeyCode() == KeyEvent.VK_E)
             isInInventory = !isInInventory;
 
         if(!keyControl.contains(""+e.getKeyCode()))
             keyControl.add(""+e.getKeyCode());
-
-
     }
 
     @Override

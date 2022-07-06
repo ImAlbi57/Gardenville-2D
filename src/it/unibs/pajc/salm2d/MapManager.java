@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class MapManager {
 
-    public static final int numTiles = 46;  //the first 10 are empty (0-9)
+    public static final int numTiles = 47;  //the first 10 are empty (0-9)
     public static final int mapDim = 50;
     public static final int tileDim = 128;
 
@@ -81,7 +81,8 @@ public class MapManager {
             tileList[42] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/hut.png"))), true);
             tileList[43] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/key.png"))), true);
             tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), true);
-            tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), false);
+            tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door1.png"))), true);
+            tileList[46] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), true);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -97,8 +98,11 @@ public class MapManager {
     }
 
     private void drawTile(Graphics2D g2, int tileNum[], int x, int y) {
-        if(tileNum[0] == 43 || tileNum[0] == 44){
+        if(tileNum[0] == 43 || tileNum[0] == 44 || tileNum[0] == 45){
             g2.drawImage(tileList[10].getImg(), x, y, this.tileDim, this.tileDim, null);
+        }
+        if(tileNum[0] == 46){
+            g2.drawImage(tileList[39].getImg(), x, y, this.tileDim, this.tileDim, null);
         }
         if(tileNum[1] == 0)
             g2.drawImage(tileList[tileNum[0]].getImg(), x, y, this.tileDim, this.tileDim, null);
