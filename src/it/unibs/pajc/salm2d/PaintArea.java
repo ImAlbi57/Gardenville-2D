@@ -142,6 +142,7 @@ public class PaintArea extends JComponent implements KeyListener{
             printPauseMenu(g2);
         }
         printNoKeyDialog(g2);
+        printHUDPlayer(g2);
     }
 
     private void printPauseMenu(Graphics2D g2){
@@ -162,7 +163,6 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.drawString(quit, -190, 210);
 
         //Rendere quit utilizzabile
-
     }
 
     private void printInventory(Graphics2D g2) {
@@ -198,6 +198,16 @@ public class PaintArea extends JComponent implements KeyListener{
             drawCenteredString(g2 , noKeyString2, new Rectangle(-350, -125, 700, 350), f1);
 
         }
+    }
+
+    private void printHUDPlayer(Graphics2D g2){
+        String[] info = new String[10];
+        info[0] = ""+mm.numKeys;
+        g2.setColor(new Color(0, 0, 0, 200));
+        Rectangle rectHUD = new Rectangle(-scale.getX()/2, -scale.getY()/2, 250, 300);
+        g2.fill(rectHUD);
+        g2.setColor(Color.WHITE);
+        drawCenteredString(g2 , "Chiavi: " + info[0], new Rectangle(-scale.getX()/2, -scale.getY()/2 + 40, 250, 10) , font);
     }
 
     public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
