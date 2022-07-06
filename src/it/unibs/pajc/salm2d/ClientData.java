@@ -37,8 +37,6 @@ public class ClientData implements Serializable {
     private Direction direction;
     private int speed;
     public Rectangle solidArea;
-    public int solidAreaDefaultX;
-    public int solidAreaDefaultY;
     private boolean[] availableMovements;
     private transient BufferedImage[] skin;
     private int ID;
@@ -56,8 +54,6 @@ public class ClientData implements Serializable {
         this.solidArea.y = 16;
         this.solidArea.width = 32;
         this.solidArea.height = 32;
-        this.solidAreaDefaultX = solidArea.x;
-        this.solidAreaDefaultY = solidArea.y;
         this.availableMovements = new boolean[4];
         this.skin = new BufferedImage[30];
         setSkinImages();

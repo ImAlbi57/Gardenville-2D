@@ -9,6 +9,7 @@ public class CollisionChecker {
         this.mm = mm;
     }
     //Metodo che mi ha fatto smadonnare
+    /*
     public int checkObjectCollision(ClientData client){
         int index = 999;
 
@@ -60,7 +61,7 @@ public class CollisionChecker {
             }
         }
         return index;
-    }
+    }*/
 
     public void checkTileCollision(ClientData client) {
 

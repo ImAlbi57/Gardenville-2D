@@ -9,15 +9,12 @@ import java.util.Objects;
 
 public class MapManager {
 
-    public static final int numTiles = 45;  //the first 10 are empty (0-9)
+    public static final int numTiles = 46;  //the first 10 are empty (0-9)
     public static final int mapDim = 50;
     public static final int tileDim = 128;
 
     public final Tile[] tileList;
     public int[][] mapTileNums;
-    public Rectangle solidAreaObj = new Rectangle(0,0,48,48);
-    public int solidAreaDefaultX = 0;
-    public int solidAreaDefaultY = 0;
 
     public MapManager() {
         tileList = new Tile[numTiles];
@@ -79,9 +76,9 @@ public class MapManager {
             tileList[40] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/wall.png"))), true);
             tileList[41] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/tree.png"))), true);
             tileList[42] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/tiles/hut.png"))), true);
-            tileList[1] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), false);
             tileList[43] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/key.png"))), false);
             tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), false);
+            tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), false);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -92,12 +89,12 @@ public class MapManager {
         for (int i = 0; i < mapDim; i++) {
             for (int j = 0; j < mapDim; j++) {
                 drawTile(g2, mapTileNums[i][j], startingX + i*tileDim, startingY + j*tileDim);
-                if(mapTileNums[i][j] == 43){
-                    /* Modo per settare x del tile della porta -> */ tileList[43].setX(startingX + i*tileDim);
-                    //System.out.println(i*tileDim);
-                    /* Modo per settare y del tile della porta -> */ tileList[43].setY(startingY + j*tileDim);
-                    //System.out.println(j*tileDim);
-                }
+                //if(mapTileNums[i][j] == 43){
+                //    /* Modo per settare x del tile della porta -> */ tileList[43].setX(startingX + i*tileDim);
+                //    //System.out.println(i*tileDim);
+                //    /* Modo per settare y del tile della porta -> */ tileList[43].setY(startingY + j*tileDim);
+                //    //System.out.println(j*tileDim);
+                //}
             }
         }
     }

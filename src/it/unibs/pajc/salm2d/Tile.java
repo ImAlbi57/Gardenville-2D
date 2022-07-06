@@ -9,28 +9,23 @@ import java.awt.image.BufferedImage;
 
 public class Tile {
     private BufferedImage img;
-    private MapManager mm;
-    public Rectangle solidArea = new Rectangle();
-    public int solidAreaDefaultX;
-    public int solidAreaDefaultY;
-    int x, y;
+    /*public Rectangle solidArea = new Rectangle();
+    int x, y;*/
     public final boolean isCollidable;
 
     public Tile(BufferedImage img, boolean isCollidable) {
         this.img = img;
         this.isCollidable = isCollidable;
-        /* -> */this.solidArea.x = 14;
-        /* -> */this.solidArea.y = 16;
-        /* -> */this.solidArea.width = 32;
-        /* -> */this.solidArea.height = 32;
-        /* -> */this.solidAreaDefaultX = solidArea.x;
-        /* -> */this.solidAreaDefaultY = solidArea.y;
+        //* -> */this.solidArea.x = 14;
+        //* -> */this.solidArea.y = 16;
+        //* -> */this.solidArea.width = 32;
+        //* -> */this.solidArea.height = 32;
     }
 
     public BufferedImage getImg() {
         return img;
     }
-
+    /*
     public int getX(){
         return x;
     }
@@ -44,5 +39,5 @@ public class Tile {
 
     public void setY(int y) {
         this.y = y;
-    }
+    }*/
 }
