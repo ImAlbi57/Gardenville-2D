@@ -278,18 +278,12 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void checkStamina(){
         if(keyControl.contains(""+KeyEvent.VK_SHIFT)){
-            if(myClientData.getStamina() >= 1){
-                myClientData.setStamina(myClientData.getStamina()-1);
-                System.out.println(myClientData.getStamina());
-            }
-            else
-                System.out.println("Stamina finita");
+            if(myClientData.getStamina() >= 1)
+                myClientData.setStamina(myClientData.getStamina() - 1);
         }
         else{
-            if(myClientData.getStamina() <= 99) {
-                myClientData.setStamina(myClientData.getStamina() + 1);
-                System.out.println(myClientData.getStamina());
-            }
+            if(myClientData.getStamina() <= 98)
+                myClientData.setStamina(myClientData.getStamina() + 2);
         }
     }
 

@@ -20,7 +20,7 @@ public class Sound {
         soundURL[0] = this.getClass().getResource("/res/sound/HomeSong.wav");
         soundURL[1] = this.getClass().getResource("/res/sound/step_grass.wav");
         soundURL[2] = this.getClass().getResource("/res/sound/runningGrass.wav");
-        soundURL[4] = this.getClass().getResource("/res/sound/birdSoundNew.wav");
+        soundURL[4] = this.getClass().getResource("/res/sound/birdSoundNewDownDecibel.wav");
         //soundURL[5] = this.getClass().getResource("/res/sound/unlock.wav");
         soundURL[5] = this.getClass().getResource("/res/sound/doorUnlockWav.wav");
         soundURL[6] = this.getClass().getResource("/res/sound/keySoundWav.wav");
