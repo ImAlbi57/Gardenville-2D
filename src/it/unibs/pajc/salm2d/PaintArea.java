@@ -145,7 +145,9 @@ public class PaintArea extends JComponent implements KeyListener{
         printHUDPlayer(g2);
         if(cCheck.getChestCollision()){
             printWin(g2);
-            //myClientData.setAlive(false);
+            t.stop();
+            t1.stop();
+            t2.stop();
         }
     }
 
@@ -169,7 +171,7 @@ public class PaintArea extends JComponent implements KeyListener{
         //Rendere quit utilizzabile
     }
 
-    private void printInventory(Graphics2D g2) {
+    private void printDialogNPC(Graphics2D g2) {
         //blur background
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
@@ -206,9 +208,10 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void printHUDPlayer(Graphics2D g2){
         String[] info = new String[10];
-        info[0] = "Statistiche:";
+        info[0] = "STATISTICHE";
         info[1] = ""+mm.numKeys;
         info[2] = ""+cCheck.openDoor;
+        info[3] = "Stamina";
         g2.setColor(new Color(255, 255, 255, 200));
         RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-scale.getX()/2 + 10, -scale.getY()/2 + 10, 270, 200, 25, 25);
         g2.fill(rectHud2);
@@ -217,13 +220,14 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.fill(rectHud);
 
         g2.setColor(Color.WHITE);
-        drawCenteredString(g2 , info[0], new Rectangle(-scale.getX()/2 - 20 , -scale.getY()/2 + 40, 250, 10) , font);
-        drawCenteredString(g2 , "Chiavi: " + info[1] + "/" + mm.numKeys, new Rectangle(-scale.getX()/2 - 24, -scale.getY()/2 + 100, 250, 10) , font);
+        drawCenteredString(g2 , info[0], new Rectangle(-scale.getX()/2 , -scale.getY()/2 + 40, 250, 10) , font);
+        drawCenteredString(g2 , "Chiavi: " + info[1] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 24, -scale.getY()/2 + 100, 250, 10) , font);
         drawCenteredString(g2 , "Porte Aperte: " + info[2] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 140, 250, 10) , font);
         g2.setColor(new Color(30, 97, 252, 200));
-        g2.fillRect(-500, 350, 10*myClientData.getStamina(), 30);
+        g2.fillRect(-518, 350, 11*myClientData.getStamina(), 30);
         g2.setColor(Color.WHITE);
-        g2.drawRect(-500, 350, 1000, 30);
+        drawCenteredString(g2 , info[3], new Rectangle(-518, 350, 1100, 28) , font);
+        g2.drawRect(-518, 350, 1100, 30);
     }
 
     private void printWin(Graphics2D g2){
