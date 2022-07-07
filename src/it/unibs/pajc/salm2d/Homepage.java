@@ -131,7 +131,7 @@ public class Homepage extends JFrame {
     }
 
     public static boolean isValidIp(final String ip) {
-        return ip.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$") && ip.matches("127.0.0.1");
+        return ip.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
     }
 
     public String getUsername() {
