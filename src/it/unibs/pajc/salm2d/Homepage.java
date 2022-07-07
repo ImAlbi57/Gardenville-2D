@@ -4,7 +4,6 @@ package it.unibs.pajc.salm2d;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
@@ -22,59 +21,61 @@ public class Homepage extends JFrame {
     private ImageIcon img;
     private JLabel lblMain;
     private String username;
-    Sound sound = new Sound();
+    SoundManager soundManager = new SoundManager();
 
-    /**
-     * Costruzione schermata principale
-     */
+
     public Homepage() {
+        inizializeHomePage();
+        playMusic(SoundManager.MAINTHEME);
+        drawAddressTxt();
+        drawLocalBtn();
+        drawUserTxt();
+        drawExternalBtn();
+    }
+
+    private void inizializeHomePage() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1000, 750);
         img = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/res/sprites/background/imgBackground_3D.jpg")));
         lblMain = new JLabel(img);
         lblMain.setSize(1000, 750);
         setResizable(false);
-
         this.setTitle("GARDENVILLE");
-
-        //Sound iniziale
-        playMusic(Sound.MAINTHEME);
-
         setContentPane(lblMain);
         lblMain.setLayout(null);
-        txtIpAddress = new JTextField();
-        txtIpAddress.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                txtIpAddress.setBackground(Color.WHITE);
-                txtIpAddress.setText("");
-            }
-        });
-        txtIpAddress.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtIpAddress.setText("IP Server ");
-        txtIpAddress.setBounds(325, 300, 350, 40);
-        lblMain.add(txtIpAddress);
-        txtIpAddress.setColumns(10);
+    }
 
-        JButton btnLocal = new JButton("LocalHost");
-        btnLocal.setFont(new Font("Arial", Font.BOLD, 14));
-        btnLocal.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!(txtUser.getText().equals("") || txtUser.getText().equals(MSG_NOME) || txtUser.getText().equals(ERRORE_NOME))) {
-                    Client client = new Client(1234);
-                    username = txtUser.getText();
-                    client.start();
-                    setVisible(false);
-                    stopMusic();
+    private void drawExternalBtn() {
+        btnEsterno = new JButton("Server Esterno");
+        btnEsterno.setFont(new Font("Arial", Font.BOLD, 14));
+
+        btnEsterno.addActionListener(e -> {
+            if (isValidIp(txtIpAddress.getText()) && !txtUser.getText().equals("") && !txtUser.getText().equals(MSG_NOME) && !txtUser.getText().equals(ERRORE_NOME)) {
+                try {
+                    ipAddress = InetAddress.getByName(txtIpAddress.getText());
+                } catch (UnknownHostException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Client client = new Client(ipAddress, 1234);
+                username = txtUser.getText();
+                client.start();
+                setVisible(false);
+                stopMusic();
+            } else {
+                if (!isValidIp(txtIpAddress.getText())) {
+                    txtIpAddress.setText(ERRORE_IP);
+                    txtIpAddress.setBackground(Color.RED);
                 } else {
                     txtUser.setText(ERRORE_NOME);
                     txtUser.setBackground(Color.RED);
                 }
             }
         });
-        btnLocal.setBounds(325, 360, 150, 40);
-        lblMain.add(btnLocal);
+        btnEsterno.setBounds(525, 360, 150, 40);
+        lblMain.add(btnEsterno);
+    }
 
+    private void drawUserTxt() {
         txtUser = new JTextField();
         txtUser.addMouseListener(new MouseAdapter() {
             @Override
@@ -84,50 +85,51 @@ public class Homepage extends JFrame {
             }
         });
 
-        txtUser.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        txtUser.setFont(new Font("Arial", Font.PLAIN, 15));
         txtUser.setText(MSG_NOME);
         txtUser.setHorizontalAlignment(SwingConstants.LEFT);
         txtUser.setBounds(325, 250, 350, 40);
         lblMain.add(txtUser);
         txtUser.setColumns(10);
-
-        btnEsterno = new JButton("Server Esterno");
-        btnEsterno.setFont(new Font("Arial", Font.BOLD, 14));
-
-        btnEsterno.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (isValidIp(txtIpAddress.getText()) && !txtUser.getText().equals("") && !txtUser.getText().equals(MSG_NOME) && !txtUser.getText().equals(ERRORE_NOME)) {
-                    try {
-                        ipAddress = InetAddress.getByName(txtIpAddress.getText());
-                    } catch (UnknownHostException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    Client client = new Client(ipAddress, 8080);
-                    username = txtUser.getText();
-                    client.start();
-                    setVisible(false);
-                    stopMusic();
-                } else {
-                    if (!isValidIp(txtIpAddress.getText())) {
-                        txtIpAddress.setText(ERRORE_IP);
-                        txtIpAddress.setBackground(Color.RED);
-                    } else {
-                        txtUser.setText(ERRORE_NOME);
-                        txtUser.setBackground(Color.RED);
-                    }
-                }
-            }
-        });
-        btnEsterno.setBounds(525, 360, 150, 40);
-        lblMain.add(btnEsterno);
     }
 
-    /**
-     * Metodo che controlla se l'ip inserito è scritto nella forma corretta
-     *
-     * @param ip
-     * @return True se è valido False altrimenti
-     */
+    private void drawAddressTxt() {
+        txtIpAddress = new JTextField();
+        txtIpAddress.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                txtIpAddress.setBackground(Color.WHITE);
+                txtIpAddress.setText("");
+            }
+        });
+        txtIpAddress.setFont(new Font("Arial", Font.PLAIN, 15));
+        txtIpAddress.setText("IP Server (se esterno 127.0.0.1)");
+        txtIpAddress.setBounds(325, 300, 350, 40);
+        lblMain.add(txtIpAddress);
+        txtIpAddress.setColumns(10);
+    }
+
+    private void drawLocalBtn() {
+        JButton btnLocal = new JButton("LocalHost");
+        btnLocal.setFont(new Font("Arial", Font.BOLD, 14));
+
+        btnLocal.addActionListener(e -> {
+            if (!(txtUser.getText().equals("") || txtUser.getText().equals(MSG_NOME) || txtUser.getText().equals(ERRORE_NOME))) {
+                Client client = new Client(1234);
+                username = txtUser.getText();
+                client.start();
+                setVisible(false);
+                stopMusic();
+            } else {
+                txtUser.setText(ERRORE_NOME);
+                txtUser.setBackground(Color.RED);
+            }
+        });
+
+        btnLocal.setBounds(325, 360, 150, 40);
+        lblMain.add(btnLocal);
+    }
+
     public static boolean isValidIp(final String ip) {
         return ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$");
     }
@@ -137,12 +139,13 @@ public class Homepage extends JFrame {
     }
 
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        soundManager.setFile(i);
+        soundManager.play();
+        soundManager.loop();
     }
+
     public void stopMusic(){
-        sound.stop();
+        soundManager.stop();
     }
 
 

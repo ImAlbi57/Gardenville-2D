@@ -1,14 +1,14 @@
 package it.unibs.pajc.salm2d;
 
-public class CollisionChecker {
+public class CollisionManager {
     MapManager mm;
     ClientData cd;
-    Sound sound = new Sound();
+    SoundManager soundManager = new SoundManager();
     private boolean noKeyDoorCollision = false;
     private boolean chestCollision = false;
     private boolean hutCollision = false;
 
-    public CollisionChecker(MapManager mm, ClientData cd) {
+    public CollisionManager(MapManager mm, ClientData cd) {
         this.cd = cd;
         this.mm = mm;
     }
@@ -52,8 +52,8 @@ public class CollisionChecker {
         int tileNum2 = mm.mapTileNums[i2][j2][0];
         if(tileNum1 == 43) keyCollision(mm.mapTileNums, i1, j1);
         if(tileNum2 == 43) keyCollision(mm.mapTileNums, i2, j2);
-        if(tileNum1 == 44 || tileNum1 == 45) doorCollision(mm.mapTileNums, i1, j1);
-        if(tileNum2 == 44 || tileNum2 == 45) doorCollision(mm.mapTileNums, i2, j2);
+        if(tileNum1 == 44) doorCollision(mm.mapTileNums, i1, j1);
+        if(tileNum2 == 44) doorCollision(mm.mapTileNums, i2, j2);
         if(tileNum1 == 46) chestCollision(mm.mapTileNums, i1, j1);
         if(tileNum2 == 46) chestCollision(mm.mapTileNums, i2, j2);
         if(tileNum1 == 42 || tileNum2 == 42) hutCollision = true;
@@ -71,7 +71,7 @@ public class CollisionChecker {
         if(map[i][j][1] == 1)
             return;
         chestCollision = true;
-        playMusic(Sound.WINSOUND);
+        playMusic(SoundManager.WINSOUND);
     }
 
     private void keyCollision(int[][][] map, int i, int j){
@@ -79,8 +79,7 @@ public class CollisionChecker {
             return;
         mm.currentNumKeys++;
         map[i][j][1] = 1;
-        playMusic(Sound.KEYSOUND);
-        System.out.println("CHIAVE RACCOLTA");
+        playMusic(SoundManager.KEYSOUND);
     }
 
     private void doorCollision(int[][][] map, int i, int j){
@@ -94,8 +93,7 @@ public class CollisionChecker {
         mm.currentOpenDoor++;
         mm.currentNumKeys--;
         map[i][j][1] = 1;
-        playMusic(Sound.UNLOCKDOOR);
-        System.out.println("PORTA SBLOCCATA");
+        playMusic(SoundManager.UNLOCKDOOR);
     }
 
     public boolean getChestCollision(){
@@ -119,7 +117,7 @@ public class CollisionChecker {
     }
 
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
+        soundManager.setFile(i);
+        soundManager.play();
     }
 }

@@ -17,12 +17,13 @@ public class PaintArea extends JComponent implements KeyListener{
     private ArrayList<NpcData> npcData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
+    public ArrayList<String> keyControl = new ArrayList<>();
     private int halfTimeCounter, skinCounterPlayer, skinCounterNpc;
-    private CollisionChecker cCheck;
+    private CollisionManager cm;
 
     private boolean isInPause = false;
     String talkingNpc;
-    Sound sound = new Sound();
+    SoundManager soundManager = new SoundManager();
     Timer t, t1, t2;
 
 
@@ -30,14 +31,14 @@ public class PaintArea extends JComponent implements KeyListener{
         this.mm = mm;
         this.myClientData = cd;
         this.npcData = new ArrayList<>();
-        initNPCs();
         this.otherClientData = new HashMap<>();
-        this.cCheck = new CollisionChecker(this.mm, myClientData);
+        this.cm = new CollisionManager(this.mm, myClientData);
+        initNPCs();
         halfTimeCounter = 0;
         skinCounterPlayer = 0;
         skinCounterNpc = 0;
         talkingNpc = "";
-        playMusicLoop(Sound.EXTERNALSOUND);
+        playMusicLoop(SoundManager.EXTERNALSOUND);
 
         t = new Timer(10, (e) -> {
             checkCollision();
@@ -68,30 +69,6 @@ public class PaintArea extends JComponent implements KeyListener{
         this.requestFocus();
         this.addKeyListener(this);
     }
-
-    private void updateNpcMovement() {
-        for (NpcData npc : npcData) {
-            npc.updateCoords();
-        }
-    }
-
-    private void initNPCs() {
-        npcData.add(new NpcData("Merlino", new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)}));
-        npcData.add(new NpcData("Gandalf", new Coords[]{new Coords(4886, 5420), new Coords(5066, 5420), new Coords(5066, 5110), new Coords(4886, 5110)}));
-    }
-
-    private boolean isMoving() {
-        return
-            keyControl.contains(""+KeyEvent.VK_W) ||
-            keyControl.contains(""+KeyEvent.VK_S) ||
-            keyControl.contains(""+KeyEvent.VK_A) ||
-            keyControl.contains(""+KeyEvent.VK_D);
-    }
-
-    public void updateClientData(int idClient, ClientData cd){
-        otherClientData.put(idClient, cd);
-    }
-
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -124,7 +101,6 @@ public class PaintArea extends JComponent implements KeyListener{
         boolean left = keyControl.contains(""+KeyEvent.VK_A);
         boolean right = keyControl.contains(""+KeyEvent.VK_D);
         myClientData.updateDirection(up, left, down, right);
-        System.out.println("Coords: " + myClientData.getCoords());
 
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
@@ -144,11 +120,11 @@ public class PaintArea extends JComponent implements KeyListener{
 
         printHUDPlayer(g2);
 
-        if(cCheck.getNoKeyCollision()){
+        if(cm.getNoKeyCollision()){
             printNoKeyDialog(g2);
         }
 
-        if(cCheck.getChestCollision()){
+        if(cm.getChestCollision()){
             printWin(g2);
             t.stop();
             t1.stop();
@@ -163,8 +139,46 @@ public class PaintArea extends JComponent implements KeyListener{
             printPauseMenu(g2);
         }
 
-        if(cCheck.getHutCollision())
+        if(cm.getHutCollision())
             restartGame();
+    }
+
+    private void initNPCs() {
+        npcData.add(new NpcData("Merlino", new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)}));
+        npcData.add(new NpcData("Gandalf", new Coords[]{new Coords(4886, 5420), new Coords(5066, 5420), new Coords(5066, 5110), new Coords(4886, 5110)}));
+    }
+
+    private void updateCoords() {
+        if(isInPause || cm.getHutCollision() || cm.getChestCollision()) return;
+
+        if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
+            myClientData.moveY(-1);
+        if(keyControl.contains(""+KeyEvent.VK_A) && myClientData.isMovementAvailable(ClientData.MOVEMENT_A))
+            myClientData.moveX(-1);
+        if(keyControl.contains(""+KeyEvent.VK_S) && myClientData.isMovementAvailable(ClientData.MOVEMENT_S))
+            myClientData.moveY(1);
+        if(keyControl.contains(""+KeyEvent.VK_D) && myClientData.isMovementAvailable(ClientData.MOVEMENT_D))
+            myClientData.moveX(1);
+        if(keyControl.contains(""+KeyEvent.VK_SHIFT) && myClientData.getStamina() == 0)
+            myClientData.setSpeed(2);
+    }
+
+    public void updateClientData(int idClient, ClientData cd){
+        otherClientData.put(idClient, cd);
+    }
+
+    private void updateNpcMovement() {
+        for (NpcData npc : npcData) {
+            npc.updateCoords();
+        }
+    }
+
+    private boolean isMoving() {
+        return
+                keyControl.contains(""+KeyEvent.VK_W) ||
+                        keyControl.contains(""+KeyEvent.VK_S) ||
+                        keyControl.contains(""+KeyEvent.VK_A) ||
+                        keyControl.contains(""+KeyEvent.VK_D);
     }
 
     private void checkCollisionNPC(){
@@ -232,7 +246,7 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void printNoKeyDialog(Graphics2D g2){
-        if(cCheck.getNoKeyCollision()){
+        if(cm.getNoKeyCollision()){
             //Font
             Font f1 = new Font("SansSerif", Font.BOLD, 25);
             //Blur
@@ -333,24 +347,8 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.drawImage(npc.getSkinImage(i+ skinCounterNpc), pos.getX(), pos.getY(), 60, 60, null);
     }
 
-
     private void drawSkinSprite(Coords c, Graphics2D g2, int index, int diagonalMovement) {
         g2.drawImage(myClientData.getSkinImage(index), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
-    }
-
-    private void updateCoords() {
-        if(isInPause || cCheck.getHutCollision() || cCheck.getChestCollision()) return;
-
-        if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
-            myClientData.moveY(-1);
-        if(keyControl.contains(""+KeyEvent.VK_A) && myClientData.isMovementAvailable(ClientData.MOVEMENT_A))
-            myClientData.moveX(-1);
-        if(keyControl.contains(""+KeyEvent.VK_S) && myClientData.isMovementAvailable(ClientData.MOVEMENT_S))
-            myClientData.moveY(1);
-        if(keyControl.contains(""+KeyEvent.VK_D) && myClientData.isMovementAvailable(ClientData.MOVEMENT_D))
-            myClientData.moveX(1);
-        if(keyControl.contains(""+KeyEvent.VK_SHIFT) && myClientData.getStamina() == 0)
-            myClientData.setSpeed(2);
     }
 
     private void checkStamina(){
@@ -372,17 +370,16 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void checkCollision(){
-        cCheck.checkTileCollision();
+        cm.checkTileCollision();
     }
 
     private void restartGame() {
         myClientData.reset();
         mm.reset();
-
-        cCheck.resetHutCollision();
+        playMusic(SoundManager.GAMEOVER);
+        cm.resetHutCollision();
     }
 
-    public ArrayList<String> keyControl = new ArrayList<>();
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
@@ -392,7 +389,7 @@ public class PaintArea extends JComponent implements KeyListener{
             isInPause = !isInPause;
 
         if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_E)
-            cCheck.resetNoKeyCollision();
+            cm.resetNoKeyCollision();
 
         if(e.getKeyCode() == KeyEvent.VK_E){
             if(!talkingNpc.equals(""))
@@ -422,22 +419,22 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void startSoundWalking(){
-        playMusic(Sound.WALKINGSOUND);
+        playMusic(SoundManager.WALKINGSOUND);
     }
 
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
+        soundManager.setFile(i);
+        soundManager.play();
     }
 
     public void playMusicLoop(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        soundManager.setFile(i);
+        soundManager.play();
+        soundManager.loop();
     }
 
     public void stopMusic(){
-        sound.stop();
+        soundManager.stop();
     }
 
     private void removeDeadPlayer(){

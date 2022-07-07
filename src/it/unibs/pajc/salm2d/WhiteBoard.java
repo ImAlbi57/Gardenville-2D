@@ -12,22 +12,13 @@ public class WhiteBoard {
     private final MapManager mm;
 
 
-    /**
-     * Create the application.
-     */
+
     public WhiteBoard(ClientData cd) {
         this.mm = new MapManager();
         this.paint = new PaintArea(mm, cd);
-        mapInit();
         initialize();
     }
 
-    private void mapInit() {
-    }
-
-    /**
-     * Initialize the contents of the frame.
-     */
     private void initialize() {
 
         frame = new JFrame();

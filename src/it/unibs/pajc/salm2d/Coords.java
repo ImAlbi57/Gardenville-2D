@@ -19,25 +19,6 @@ public class Coords implements Serializable {
         this.y = coords.getY();
     }
 
-    //Metodo costruttore vuoto
-    public Coords(){
-        this.x = 0;
-        this.y = 0;
-    }
-
-    //Costruttore da String (deprecato)
-    public Coords(String init){
-        update(init);
-    }
-
-    //Metodo per aggiornare i dati da stringa (deprecato)
-    public void update(String s) {
-        String cleaner = s.substring(1, s.length()-1).replaceAll("\\s+","");
-        String parts[] = cleaner.split(";");
-        this.x = Integer.parseInt(parts[0]);
-        this.y = Integer.parseInt(parts[1]);
-    }
-
     //Getters
     public int getX() {
         return x;

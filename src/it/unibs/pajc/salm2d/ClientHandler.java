@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 // ClientHandler class
 public class ClientHandler implements Runnable {
-    // socket ricezione messaggio client
     Socket socket;
     private static ArrayList<ClientHandler> clientList = new ArrayList<>();
     ClientData myClientData;
@@ -40,13 +39,11 @@ public class ClientHandler implements Runnable {
             ClientData cd;
             while( (obj = in.readObject()) != null ){
                 cd = (ClientData) obj;
-                //System.out.println(cd.getCoords());
 
                 //Messaggio ricevuto dal proprio client -> mando agli altri handler
                 if(this.ID == cd.getID()){
                     myClientData = cd;
                     sendToOthers(this, cd);
-                    //System.out.println(ID + "#: " + cd.getCoords()+ " -> " + cd.getDirection());
                 }
                 //Messaggio ricevuto da un altro clientHandler -> mando al client
                 else{
@@ -61,10 +58,6 @@ public class ClientHandler implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    protected void sendToAll(ClientHandler sender, ClientData cd) {
-        clientList.forEach(c -> c.sendMessage(sender, cd));
     }
 
     protected void sendToOthers(ClientHandler sender, ClientData cd) {
@@ -98,10 +91,6 @@ public class ClientHandler implements Runnable {
 
     public int getID() {
         return ID;
-    }
-
-    public Socket getSocket() {
-        return socket;
     }
 
     public boolean isAlive() {

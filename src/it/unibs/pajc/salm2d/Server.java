@@ -12,13 +12,10 @@ public class Server {
     private int port;
     private boolean connection;
 
-
     public Server(int port){
         this.port = port;
         users = new ArrayList<>();
     }
-
-
 
     public void start(){
         connection = true;
@@ -83,10 +80,7 @@ public class Server {
         }
     }
 
-
-    //Se multiplayer cambiare porta in 8080
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){
         int port = 1234;
         Server server = new Server(port);
         server.start();
