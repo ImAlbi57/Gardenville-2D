@@ -75,7 +75,7 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void initNPCs() {
         npcData.add(new NpcData("Merlino", new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)}));
-        npcData.add(new NpcData("Cazzino", new Coords[]{new Coords(2925, 2970), new Coords(2995, 2970), new Coords(2995, 2900), new Coords(2925, 2900)}));
+        npcData.add(new NpcData("Gandalf", new Coords[]{new Coords(4886, 5420), new Coords(5066, 5420), new Coords(5066, 5110), new Coords(4886, 5110)}));
     }
 
     private boolean isMoving() {
@@ -122,7 +122,7 @@ public class PaintArea extends JComponent implements KeyListener{
         boolean left = keyControl.contains(""+KeyEvent.VK_A);
         boolean right = keyControl.contains(""+KeyEvent.VK_D);
         myClientData.updateDirection(up, left, down, right);
-        //System.out.println("Coords: " + myClientData.getCoords());
+        System.out.println("Coords: " + myClientData.getCoords());
 
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
@@ -136,6 +136,9 @@ public class PaintArea extends JComponent implements KeyListener{
 
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
 
+        if(isInPause){
+            printPauseMenu(g2);
+        }
 
         printHUDPlayer(g2);
 
@@ -189,8 +192,7 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void printDialogNPC(Graphics2D g2, String talkingNpc) {
-        System.out.println(talkingNpc);
-
+        String npcDialog1, npcDialog2, npcDialog3, npcDialog4;
         //Blur
         Font f1 = new Font("SansSerif", Font.BOLD, 27);
         g2.setColor(new Color(0, 0, 0, 150));
@@ -206,14 +208,22 @@ public class PaintArea extends JComponent implements KeyListener{
         //String
         g2.setFont(font);
         g2.setColor(Color.BLACK);
-        String noKeyString1 = "Benvenuto: " + myClientData.getName();
-        String noKeyString2 = "Il tuo obiettivo sarà quello di trovare abbastanza";
-        String noKeyString3 = "chiavi per aprire tutte le porte";
-        String noKeyString4 = "Trova il secondo mago che ti aiuterà a superare le insidie";
-        drawCenteredString(g2 , noKeyString1, new Rectangle(-350, -250, 800, 300), f1);
-        drawCenteredString(g2 , noKeyString2, new Rectangle(-350, -200, 800, 300), f1);
-        drawCenteredString(g2 , noKeyString3, new Rectangle(-350, -150, 800, 300), f1);
-        drawCenteredString(g2 , noKeyString4, new Rectangle(-350, -100, 800, 300), f1);
+        if(talkingNpc.equals("Merlino")){
+            npcDialog1 = "Benvenuto " + myClientData.getName();
+            npcDialog2 = "Il tuo obiettivo sarà quello di trovare abbastanza";
+            npcDialog3 = "chiavi per aprire tutte le porte";
+            npcDialog4 = "Trova il secondo mago che ti aiuterà a superare le insidie";
+        }
+        else {
+            npcDialog1 = "Ciao " + myClientData.getName();
+            npcDialog2 = "Il mio consiglio è di controllare le porte";
+            npcDialog3 = "in quanto alcune sono ingannevoli!";
+            npcDialog4 = "Saranno contrassegnate dalle iniziali dei creatori!";
+        }
+        drawCenteredString(g2 , npcDialog1, new Rectangle(-350, -250, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog2, new Rectangle(-350, -200, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog3, new Rectangle(-350, -150, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog4, new Rectangle(-350, -100, 800, 300), f1);
     }
 
     private void printNoKeyDialog(Graphics2D g2){
