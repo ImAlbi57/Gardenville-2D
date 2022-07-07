@@ -105,7 +105,7 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.scale(s, s);
         g2.translate(scale.getX()/2., scale.getY()/2.);
 
-        g2.setStroke(new BasicStroke(2f));
+        g2.setStroke(new BasicStroke(3f));
 
         mm.drawMap(g2, -myClientData.getCoords().getX(), -myClientData.getCoords().getY());
 
@@ -136,9 +136,7 @@ public class PaintArea extends JComponent implements KeyListener{
 
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
 
-        if(isInPause){
-            printPauseMenu(g2);
-        }
+
         if(cCheck.getNoKeyCollision()){
             printNoKeyDialog(g2);
         }
@@ -148,6 +146,10 @@ public class PaintArea extends JComponent implements KeyListener{
             t.stop();
             t1.stop();
             t2.stop();
+        }
+        if(isInPause){
+            //printPauseMenu(g2);
+            printDialogNPC(g2);
         }
     }
 
@@ -172,14 +174,29 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void printDialogNPC(Graphics2D g2) {
-        //blur background
+        //Blur
+        Font f1 = new Font("SansSerif", Font.BOLD, 27);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
-
-        //print inventory popup
-        g2.setColor(new Color(250, 250, 250, 150));
-        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-500, -350, 1000, 700, 50, 50);
+        g2.setColor(new Color(238, 150, 16, 255));
+        //BackRect
+        RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-360, -185, 820, 320, 25, 25);
+        g2.fill(rectHud2);
+        //Rect
+        g2.setColor(new Color(235, 213, 190, 255));
+        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-350, -175, 800, 300, 25, 25);
         g2.fill(roundedRectangle);
+        //String
+        g2.setFont(font);
+        g2.setColor(Color.BLACK);
+        String noKeyString1 = "Benvenuto: " + myClientData.getName();
+        String noKeyString2 = "Il tuo obiettivo sarà quello di trovare abbastanza";
+        String noKeyString3 = "chiavi per aprire tutte le porte";
+        String noKeyString4 = "Trova il secondo mago che ti aiuterà a superare le insidie";
+        drawCenteredString(g2 , noKeyString1, new Rectangle(-350, -250, 800, 300), f1);
+        drawCenteredString(g2 , noKeyString2, new Rectangle(-350, -200, 800, 300), f1);
+        drawCenteredString(g2 , noKeyString3, new Rectangle(-350, -150, 800, 300), f1);
+        drawCenteredString(g2 , noKeyString4, new Rectangle(-350, -100, 800, 300), f1);
     }
 
     private void printNoKeyDialog(Graphics2D g2){
