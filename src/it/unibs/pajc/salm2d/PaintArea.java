@@ -211,7 +211,7 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void printDialogNPC(Graphics2D g2, String talkingNpc) {
-        String npcDialog1, npcDialog2, npcDialog3, npcDialog4;
+        String npcDialog1, npcDialog2, npcDialog3, npcDialog4, npcDialog5;
         //Blur
         Font f1 = new Font("SansSerif", Font.BOLD, 27);
         g2.setColor(new Color(0, 0, 0, 150));
@@ -225,24 +225,26 @@ public class PaintArea extends JComponent implements KeyListener{
         RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(-350, -175, 800, 300, 25, 25);
         g2.fill(roundedRectangle);
         //String
-        g2.setFont(font);
         g2.setColor(Color.BLACK);
         if(talkingNpc.equals("Merlino")){
             npcDialog1 = "Benvenuto " + myClientData.getName();
             npcDialog2 = "Il tuo obiettivo sarà quello di trovare abbastanza";
             npcDialog3 = "chiavi per aprire tutte le porte";
             npcDialog4 = "Trova il secondo mago che ti aiuterà a superare le insidie";
+            npcDialog5 = "Attento alla casa, può farti dimenticare tutto!";
         }
         else {
             npcDialog1 = "Ciao " + myClientData.getName();
             npcDialog2 = "Il mio consiglio è di controllare le porte";
             npcDialog3 = "in quanto alcune sono ingannevoli!";
             npcDialog4 = "Saranno contrassegnate dalle iniziali dei creatori!";
+            npcDialog5 = "Usa la casetta se non riesci a completare il gioco!";
         }
-        drawCenteredString(g2 , npcDialog1, new Rectangle(-350, -250, 800, 300), f1);
-        drawCenteredString(g2 , npcDialog2, new Rectangle(-350, -200, 800, 300), f1);
-        drawCenteredString(g2 , npcDialog3, new Rectangle(-350, -150, 800, 300), f1);
-        drawCenteredString(g2 , npcDialog4, new Rectangle(-350, -100, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog1, new Rectangle(-350, -280, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog2, new Rectangle(-350, -225, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog3, new Rectangle(-350, -175, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog4, new Rectangle(-350, -125, 800, 300), f1);
+        drawCenteredString(g2 , npcDialog5, new Rectangle(-350, -75, 800, 300), f1);
     }
 
     private void printNoKeyDialog(Graphics2D g2){

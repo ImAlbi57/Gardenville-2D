@@ -11,22 +11,20 @@ public class SoundManager {
     private URL soundURL[] = new URL[30];
     public static final int MAINTHEME = 0;
     public static final int WALKINGSOUND = 1;
-    public static final int RUNNINGSOUND = 2;
-    public static final int GAMEOVER = 3;
-    public static final int EXTERNALSOUND = 4;
-    public static final int UNLOCKDOOR = 5;
-    public static final int KEYSOUND = 6;
-    public static final int WINSOUND = 7;
+    public static final int GAMEOVER = 2;
+    public static final int EXTERNALSOUND = 3;
+    public static final int UNLOCKDOOR = 4;
+    public static final int KEYSOUND = 5;
+    public static final int WINSOUND = 6;
 
     public SoundManager(){
         soundURL[0] = this.getClass().getResource("/res/sound/HomeSong.wav");
         soundURL[1] = this.getClass().getResource("/res/sound/step_grass.wav");
-        soundURL[2] = this.getClass().getResource("/res/sound/runningGrass.wav");
-        soundURL[3] = this.getClass().getResource("/res/sound/gameover.wav");
-        soundURL[4] = this.getClass().getResource("/res/sound/birdSoundNewDownDecibel.wav");
-        soundURL[5] = this.getClass().getResource("/res/sound/doorUnlockWav.wav");
-        soundURL[6] = this.getClass().getResource("/res/sound/keySoundWav.wav");
-        soundURL[7] = this.getClass().getResource("/res/sound/fanfare.wav");
+        soundURL[2] = this.getClass().getResource("/res/sound/gameover.wav");
+        soundURL[3] = this.getClass().getResource("/res/sound/birdSoundNewDownDecibel.wav");
+        soundURL[4] = this.getClass().getResource("/res/sound/doorUnlockWav.wav");
+        soundURL[5] = this.getClass().getResource("/res/sound/keySoundWav.wav");
+        soundURL[6] = this.getClass().getResource("/res/sound/fanfare.wav");
     }
     public void setFile(int i){
         try{
