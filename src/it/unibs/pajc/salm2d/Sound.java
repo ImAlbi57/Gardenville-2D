@@ -15,6 +15,8 @@ public class Sound {
     public static final int MOBSOUND = 3;
     public static final int EXTERNALSOUND = 4;
     public static final int UNLOCKDOOR = 5;
+    public static final int KEYSOUND = 6;
+    public static final int WINSOUND = 7;
 
     public Sound(){
         soundURL[0] = this.getClass().getResource("/res/sound/HomeSong.wav");
@@ -23,6 +25,7 @@ public class Sound {
         soundURL[4] = this.getClass().getResource("/res/sound/birdSoundNewDownDecibel.wav");
         soundURL[5] = this.getClass().getResource("/res/sound/doorUnlockWav.wav");
         soundURL[6] = this.getClass().getResource("/res/sound/keySoundWav.wav");
+        soundURL[7] = this.getClass().getResource("/res/sound/fanfare.wav");
     }
     public void setFile(int i){
         try{

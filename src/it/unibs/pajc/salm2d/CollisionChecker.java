@@ -6,6 +6,7 @@ public class CollisionChecker {
     Sound sound = new Sound();
     private boolean noKeyDoorCollision = false;
     public int openDoor;
+    private boolean chestCollision = false;
 
     public CollisionChecker(MapManager mm, ClientData cd) {
         this.cd = cd;
@@ -53,6 +54,8 @@ public class CollisionChecker {
         if(tileNum2 == 43) keyCollision(mm.mapTileNums, i2, j2);
         if(tileNum1 == 44 || tileNum1 == 45) doorCollision(mm.mapTileNums, i1, j1);
         if(tileNum2 == 44 || tileNum2 == 45) doorCollision(mm.mapTileNums, i2, j2);
+        if(tileNum1 == 46) chestCollision(mm.mapTileNums, i1, j1);
+        if(tileNum2 == 46) chestCollision(mm.mapTileNums, i2, j2);
 
         boolean canGoThru =
                 (!mm.tileList[tileNum1].isCollidable &&
@@ -62,12 +65,19 @@ public class CollisionChecker {
         cd.setMovement(movement, canGoThru);
     }
 
+    private void chestCollision(int[][][] map, int i, int j){
+        if(map[i][j][1] == 1)
+            return;
+        chestCollision = true;
+        playMusic(Sound.WINSOUND);
+    }
+
     private void keyCollision(int[][][] map, int i, int j){
         if(map[i][j][1] == 1)
             return;
         mm.numKeys++;
         map[i][j][1] = 1;
-        playMusic(6);
+        playMusic(Sound.KEYSOUND);
         System.out.println("CHIAVE RACCOLTA");
     }
 
@@ -82,12 +92,16 @@ public class CollisionChecker {
         openDoor++;
         mm.numKeys--;
         map[i][j][1] = 1;
-        playMusic(5);
+        playMusic(Sound.UNLOCKDOOR);
         System.out.println("PORTA SBLOCCATA");
     }
 
     public boolean getNoKeyCollision() {
         return noKeyDoorCollision;
+    }
+
+    public boolean getChestCollision(){
+        return chestCollision;
     }
 
     public void resetNoKeyCollision() {

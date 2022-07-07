@@ -143,6 +143,10 @@ public class PaintArea extends JComponent implements KeyListener{
             printNoKeyDialog(g2);
         }
         printHUDPlayer(g2);
+        if(cCheck.getChestCollision()){
+            printWin(g2);
+            //myClientData.setAlive(false);
+        }
     }
 
     private void printPauseMenu(Graphics2D g2){
@@ -202,20 +206,34 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void printHUDPlayer(Graphics2D g2){
         String[] info = new String[10];
-        info[0] = ""+mm.numKeys;
-        info[1] = ""+cCheck.openDoor;
-        info[2] = ""+myClientData.getStamina();
+        info[0] = "Statistiche:";
+        info[1] = ""+mm.numKeys;
+        info[2] = ""+cCheck.openDoor;
+        g2.setColor(new Color(255, 255, 255, 200));
+        RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-scale.getX()/2 + 10, -scale.getY()/2 + 10, 270, 200, 25, 25);
+        g2.fill(rectHud2);
         g2.setColor(new Color(0, 0, 0, 200));
-        Rectangle rectHUD = new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 20, 250, 300);
-        g2.fill(rectHUD);
+        RoundRectangle2D rectHud = new RoundRectangle2D.Float(-scale.getX()/2 + 20, -scale.getY()/2 + 20, 250, 180, 25, 25);
+        g2.fill(rectHud);
+
         g2.setColor(Color.WHITE);
-        drawCenteredString(g2 , "Chiavi: " + info[0] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 22 , -scale.getY()/2 + 40, 250, 10) , font);
-        drawCenteredString(g2 , "Porte Aperte: " + info[1] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 80, 250, 10) , font);
-        drawCenteredString(g2 , "Stamina: " + info[2] + "/" + 100, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 120, 250, 10) , font);
+        drawCenteredString(g2 , info[0], new Rectangle(-scale.getX()/2 - 20 , -scale.getY()/2 + 40, 250, 10) , font);
+        drawCenteredString(g2 , "Chiavi: " + info[1] + "/" + mm.numKeys, new Rectangle(-scale.getX()/2 - 24, -scale.getY()/2 + 100, 250, 10) , font);
+        drawCenteredString(g2 , "Porte Aperte: " + info[2] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 140, 250, 10) , font);
         g2.setColor(new Color(30, 97, 252, 200));
         g2.fillRect(-500, 350, 10*myClientData.getStamina(), 30);
         g2.setColor(Color.WHITE);
         g2.drawRect(-500, 350, 1000, 30);
+    }
+
+    private void printWin(Graphics2D g2){
+        Font f = new Font("SansSerif", Font.BOLD, 150);
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.setFont(f);
+        String state = "Hai vinto!";
+        g2.fillRect(-scale.getX()/2, -scale.getY()/2, scale.getX()+100, scale.getY());
+        g2.setColor(Color.WHITE);
+        g2.drawString(state, -300, 75);
     }
 
     public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
@@ -262,6 +280,7 @@ public class PaintArea extends JComponent implements KeyListener{
 
     private void updateCoords() {
         if(isInPause) return;
+        if(cCheck.getChestCollision()) return;
 
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);
