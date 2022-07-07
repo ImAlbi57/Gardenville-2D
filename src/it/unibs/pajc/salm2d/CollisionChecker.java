@@ -13,12 +13,12 @@ public class CollisionChecker {
         this.mm = mm;
     }
 
-    public void checkTileCollision(ClientData client) {
+    public void checkTileCollision() {
 
-        int entityLeftWorldX = cd.getCoords().getX() + client.hitboxArea.x;
-        int entityRightWorldX = cd.getCoords().getX() + client.hitboxArea.x + client.hitboxArea.width;
-        int entityTopWorldY = cd.getCoords().getY() + client.hitboxArea.y;
-        int entityBottomWorldY = cd.getCoords().getY() + client.hitboxArea.y + client.hitboxArea.height;
+        int entityLeftWorldX = cd.getCoords().getX() + ClientData.hitboxArea.x;
+        int entityRightWorldX = cd.getCoords().getX() + ClientData.hitboxArea.x + ClientData.hitboxArea.width;
+        int entityTopWorldY = cd.getCoords().getY() + ClientData.hitboxArea.y;
+        int entityBottomWorldY = cd.getCoords().getY() + ClientData.hitboxArea.y + ClientData.hitboxArea.height;
 
         int entityLeftCol = entityLeftWorldX / MapManager.tileDim;
         int entityRightCol = entityRightWorldX / MapManager.tileDim;

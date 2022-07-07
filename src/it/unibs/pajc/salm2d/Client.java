@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 public class Client {
 
     private ClientData cd;
-    private int port;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -18,7 +17,6 @@ public class Client {
     private static Homepage hp;
 
     public Client(int port){
-        this.port = port;
         try {
             socket = new Socket("localhost", port);
         } catch (Exception e) {
@@ -28,7 +26,6 @@ public class Client {
     }
 
     public Client(InetAddress ipAddress, int port){
-        this.port = port;
         try {
             socket = new Socket(ipAddress, port);
         } catch (Exception e) {
@@ -53,19 +50,14 @@ public class Client {
         }
         try {
             Object obj;
-            while((obj = in.readObject() ) != null){
+            while ((obj = in.readObject()) != null) {
                 String str = (String) obj;
-                if(str.startsWith("#")){
+                if (str.startsWith("#")) {
                     ID = Integer.parseInt(str.substring(1));
                     break;
                 }
             }
-            //if (ID == -1) {
-            //    System.out.println("Numero massimo di utenti raggiunto");
-            //    return;
-            //}
-        } catch (IOException e) {
-            e.printStackTrace();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

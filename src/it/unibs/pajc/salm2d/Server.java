@@ -44,7 +44,6 @@ public class Server {
 
                 }
                 else{
-                    //out.println(-1);
                     client.close();
                 }
 

@@ -1,13 +1,16 @@
 package it.unibs.pajc.salm2d;
 
 public class Path {
-    private static int delta = 1;
 
-    private Coords[] path;
+    private final Coords[] path;
     private int currentStep;
+    private Direction d;
+    private Coords currentCoords;
 
 
     public Path(Coords[] path) {
+        currentCoords = path[0];
+        this.d = Direction.S;
         this.path = path;
         currentStep = 0;
     }
@@ -18,23 +21,34 @@ public class Path {
         return path[currentStep+1];
     }
 
-    public Coords stepNext(Coords c){
-        if(c.equals(getNextStep())){
-            //System.out.println("NEXT: " + getNextStep() + " Current step: " + path[currentStep] + " Attuale: " + c);
+    public void stepNext(){
+        if(currentCoords.equals(getNextStep())){
             currentStep++;
             if(currentStep == path.length)
                 currentStep = 0;
         }
 
-        Coords nextC = getNextStep();
-        Coords toReturn = new Coords(c);
+        Coords nextPathCoord = getNextStep();
+        Coords newCoords = new Coords(currentCoords);
 
-        if(nextC.getX() != c.getX())
-            toReturn.setX( toReturn.getX() + (int)(Math.signum(nextC.getX() - c.getX()) * delta));
+        int dx = (int) Math.signum(nextPathCoord.getX() - currentCoords.getX());
+        int dy = (int) Math.signum(nextPathCoord.getY() - currentCoords.getY());
+        this.d = Direction.getDirection(dy<0, dx<0, dy>0, dx>0);
 
-        if(nextC.getY() != c.getY())
-            toReturn.setY( toReturn.getY() + (int)(Math.signum(nextC.getY() - c.getY()) * delta));
+        if(nextPathCoord.getX() != currentCoords.getX())
+            newCoords.setX( newCoords.getX() + dx);
 
-        return toReturn;
+        if(nextPathCoord.getY() != currentCoords.getY())
+            newCoords.setY( newCoords.getY() + dy);
+
+        this.currentCoords = newCoords;
+    }
+
+    public Direction getDirection() {
+        return d;
+    }
+
+    public Coords getCoords() {
+        return currentCoords;
     }
 }

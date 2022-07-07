@@ -6,7 +6,6 @@ import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class PaintArea extends JComponent implements KeyListener{
@@ -15,12 +14,12 @@ public class PaintArea extends JComponent implements KeyListener{
     private static final Font font = new Font("TimesRoman", Font.PLAIN, 30);
 
     private ClientData myClientData;
-    private HashMap<NpcData, Path> myNpcData;
+    private ArrayList<NpcData> npcData;
     private final MapManager mm;
     private HashMap<Integer,ClientData> otherClientData;
-    private int halfTimeCounter;
-    private int skinCounter;
+    private int halfTimeCounter, skinCounterPlayer, skinCounterNpc;
     private CollisionChecker cCheck;
+    String talkingNpc;
     Sound sound = new Sound();
     Timer t, t1, t2;
 
@@ -28,12 +27,14 @@ public class PaintArea extends JComponent implements KeyListener{
     public PaintArea(MapManager mm, ClientData cd) {
         this.mm = mm;
         this.myClientData = cd;
-        this.myNpcData = new HashMap<>();
+        this.npcData = new ArrayList<>();
         initNPCs();
         this.otherClientData = new HashMap<>();
         this.cCheck = new CollisionChecker(this.mm, myClientData);
         halfTimeCounter = 0;
-        skinCounter = 0;
+        skinCounterPlayer = 0;
+        skinCounterNpc = 0;
+        talkingNpc = "";
         playMusicLoop(Sound.EXTERNALSOUND);
 
         t = new Timer(10, (e) -> {
@@ -44,6 +45,7 @@ public class PaintArea extends JComponent implements KeyListener{
         t.start();
 
         t1 = new Timer(250, (e) -> {
+            skinCounterNpc = 1 - skinCounterNpc;
             removeDeadPlayer();
             checkStamina();
             if(isMoving() && !isInPause){
@@ -57,7 +59,7 @@ public class PaintArea extends JComponent implements KeyListener{
         });
         t1.start();
 
-        t2 = new Timer(10, (e) -> updateNpcMovement());
+        t2 = new Timer(20, (e) -> updateNpcMovement());
         t2.start();
 
         this.setFocusable(true);
@@ -66,17 +68,14 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void updateNpcMovement() {
-        for (Map.Entry<NpcData, Path> npcValues : myNpcData.entrySet()) {
-            NpcData npc = npcValues.getKey();
-            Path path = npcValues.getValue();
-            npc.setCoords(path.stepNext(npc.getCoords()));
-            //System.out.println("Sposto il coglione a " + npc.getCoords());
+        for (NpcData npc : npcData) {
+            npc.updateCoords();
         }
     }
 
     private void initNPCs() {
-        Coords[] cs = new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)};
-        myNpcData.put(new NpcData(cs[0], Direction.S), new Path(cs));
+        npcData.add(new NpcData("Merlino", new Coords[]{new Coords(2725, 2970), new Coords(2795, 2970), new Coords(2795, 2900), new Coords(2725, 2900)}));
+        npcData.add(new NpcData("Cazzino", new Coords[]{new Coords(2925, 2970), new Coords(2995, 2970), new Coords(2995, 2900), new Coords(2925, 2900)}));
     }
 
     private boolean isMoving() {
@@ -123,11 +122,12 @@ public class PaintArea extends JComponent implements KeyListener{
         boolean left = keyControl.contains(""+KeyEvent.VK_A);
         boolean right = keyControl.contains(""+KeyEvent.VK_D);
         myClientData.updateDirection(up, left, down, right);
+        //System.out.println("Coords: " + myClientData.getCoords());
 
         //player hitbox
         //g2.drawRect(myClientData.solidArea.x, myClientData.solidArea.y, myClientData.solidArea.width, myClientData.solidArea.height);
 
-        for (NpcData npc : myNpcData.keySet()) {
+        for (NpcData npc : npcData) {
             int relX = npc.getCoords().getX() - myClientData.getCoords().getX();
             int relY = npc.getCoords().getY() - myClientData.getCoords().getY();
             Coords relativePos = new Coords(relX, relY);
@@ -137,19 +137,34 @@ public class PaintArea extends JComponent implements KeyListener{
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
 
 
+        printHUDPlayer(g2);
+
         if(cCheck.getNoKeyCollision()){
             printNoKeyDialog(g2);
         }
-        printHUDPlayer(g2);
+
         if(cCheck.getChestCollision()){
             printWin(g2);
             t.stop();
             t1.stop();
             t2.stop();
         }
+
+        if(!talkingNpc.equals("")){
+            printDialogNPC(g2, talkingNpc);
+        }
+
         if(isInPause){
-            //printPauseMenu(g2);
-            printDialogNPC(g2);
+            printPauseMenu(g2);
+        }
+    }
+
+    private void checkCollisionNPC(){
+        Coords myCoords = myClientData.getCoords();
+        for(NpcData npc : npcData){
+            if(npc.getCoords().isNear(myCoords)){
+                talkingNpc = npc.getName();
+            }
         }
     }
 
@@ -173,7 +188,9 @@ public class PaintArea extends JComponent implements KeyListener{
         //Rendere quit utilizzabile
     }
 
-    private void printDialogNPC(Graphics2D g2) {
+    private void printDialogNPC(Graphics2D g2, String talkingNpc) {
+        System.out.println(talkingNpc);
+
         //Blur
         Font f1 = new Font("SansSerif", Font.BOLD, 27);
         g2.setColor(new Color(0, 0, 0, 150));
@@ -215,8 +232,6 @@ public class PaintArea extends JComponent implements KeyListener{
             g2.setColor(Color.BLACK);
             String noKeyString1 = "Non disponi della chiave per aprire questa porta!";
             String noKeyString2 = "Cercala per la mappa e riprova";
-            //g2.drawString(noKeyString1, -200, -50);
-            //g2.drawString(noKeyString2, -200, 50);
             drawCenteredString(g2 , noKeyString1, new Rectangle(-350, -225, 700, 350), f1);
             drawCenteredString(g2 , noKeyString2, new Rectangle(-350, -125, 700, 350), f1);
 
@@ -230,10 +245,10 @@ public class PaintArea extends JComponent implements KeyListener{
         info[2] = ""+cCheck.openDoor;
         info[3] = "Stamina";
         g2.setColor(new Color(255, 255, 255, 200));
-        RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-scale.getX()/2 + 10, -scale.getY()/2 + 10, 270, 200, 25, 25);
+        RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-scale.getX()/2f + 10, -scale.getY()/2f + 10, 270, 200, 25, 25);
         g2.fill(rectHud2);
         g2.setColor(new Color(0, 0, 0, 200));
-        RoundRectangle2D rectHud = new RoundRectangle2D.Float(-scale.getX()/2 + 20, -scale.getY()/2 + 20, 250, 180, 25, 25);
+        RoundRectangle2D rectHud = new RoundRectangle2D.Float(-scale.getX()/2f + 20, -scale.getY()/2f + 20, 250, 180, 25, 25);
         g2.fill(rectHud);
 
         g2.setColor(Color.WHITE);
@@ -277,26 +292,35 @@ public class PaintArea extends JComponent implements KeyListener{
         drawCenteredString(g2, nickname, new Rectangle(pos.getX(), pos.getY()-30, 60, 20), font);
 
         switch (cd.getDirection()) {
-            case S -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 0);
-            case W -> drawSkinSprite(pos, g2, 2 + playerType*8, skinCounter, 0);
-            case E -> drawSkinSprite(pos, g2, 4 + playerType*8, skinCounter, 0);
-            case N -> drawSkinSprite(pos, g2, 6 + playerType*8, skinCounter, 0);
-            case SE, SW -> drawSkinSprite(pos, g2, 0 + playerType*8, skinCounter, 1);
-            case NE, NW -> drawSkinSprite(pos, g2, 6 + playerType*8, skinCounter, 1);
+            case S -> drawSkinSprite(pos, g2, 0 + playerType*8 + skinCounterPlayer, 0);
+            case W -> drawSkinSprite(pos, g2, 2 + playerType*8 + skinCounterPlayer, 0);
+            case E -> drawSkinSprite(pos, g2, 4 + playerType*8 + skinCounterPlayer, 0);
+            case N -> drawSkinSprite(pos, g2, 6 + playerType*8 + skinCounterPlayer, 0);
+            case SE, SW -> drawSkinSprite(pos, g2, 0 + playerType*8 + skinCounterPlayer, 1);
+            case NE, NW -> drawSkinSprite(pos, g2, 6 + playerType*8 + skinCounterPlayer, 1);
         }
     }
 
     private void drawNpc(Graphics2D g2, NpcData npc, Coords pos){
-        String nickname = "Merlino";
+        String nickname = npc.getName();
         g2.setColor(Color.WHITE);
 
         drawCenteredString(g2, nickname, new Rectangle(pos.getX(), pos.getY()-30, 60, 20), font);
-        g2.drawImage(npc.getSkinImage(0), pos.getX(), pos.getY(), 60, 60, null);
+
+        int i;
+        switch (npc.getDirection()) {
+            case S -> i=0;
+            case W -> i=2;
+            case E -> i=4;
+            case N -> i=6;
+            default -> {System.out.println("MOVIMENTO NON PREVISTO"); i=0;}
+        }
+        g2.drawImage(npc.getSkinImage(i+ skinCounterNpc), pos.getX(), pos.getY(), 60, 60, null);
     }
 
 
-    private void drawSkinSprite(Coords c, Graphics2D g2, int index, int alternativeSkin, int diagonalMovement) {
-        g2.drawImage(myClientData.getSkinImage(index + alternativeSkin), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
+    private void drawSkinSprite(Coords c, Graphics2D g2, int index, int diagonalMovement) {
+        g2.drawImage(myClientData.getSkinImage(index), c.getX() + diagonalMovement*5, c.getY(), 60 - diagonalMovement*10, 60, null);
     }
 
     private void updateCoords() {
@@ -330,11 +354,11 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void updateSkinMovement(){
-        skinCounter = 1 - skinCounter;
+        skinCounterPlayer = 1 - skinCounterPlayer;
     }
 
     private void checkCollision(){
-        cCheck.checkTileCollision(myClientData);
+        cCheck.checkTileCollision();
     }
 
     public ArrayList<String> keyControl = new ArrayList<>();
@@ -349,6 +373,12 @@ public class PaintArea extends JComponent implements KeyListener{
 
         if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_E)
             cCheck.resetNoKeyCollision();
+
+        if(e.getKeyCode() == KeyEvent.VK_E){
+            if(!talkingNpc.equals(""))
+                talkingNpc = "";
+            else checkCollisionNPC();
+        }
 
         if(!keyControl.contains(""+e.getKeyCode()))
             keyControl.add(""+e.getKeyCode());

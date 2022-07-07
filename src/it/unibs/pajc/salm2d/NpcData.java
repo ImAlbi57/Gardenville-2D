@@ -14,14 +14,14 @@ public class NpcData{
     private static final int RIGHT_2 = 5;
     private static final int UP_LEFT = 6;
     private static final int UP_RIGHT = 7;
-    final int ID = 1;
-    private transient BufferedImage[] skin;
-    private Coords coords;
-    private Direction direction;
 
-    public NpcData(Coords coords, Direction direction) {
-        this.coords = coords;
-        this.direction = direction;
+    private transient BufferedImage[] skin;
+    private String name;
+    private Path path;
+
+    public NpcData(String name, Coords[] ccs) {
+        this.name = name;
+        this.path = new Path(ccs);
         this.skin = new BufferedImage[30];
         setSkinImages();
     }
@@ -41,15 +41,23 @@ public class NpcData{
         }
     }
 
+    public void updateCoords(){
+        path.stepNext();
+    }
+
     public BufferedImage getSkinImage(int i){
         return skin[i];
     }
 
     public Coords getCoords() {
-        return coords;
+        return path.getCoords();
     }
 
-    public void setCoords(Coords coords) {
-        this.coords = coords;
+    public Direction getDirection(){
+        return path.getDirection();
+    }
+
+    public String getName() {
+        return name;
     }
 }

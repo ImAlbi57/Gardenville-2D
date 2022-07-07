@@ -64,6 +64,8 @@ public class ClientData implements Serializable {
         this.coords = new Coords(cd.getCoords());
         this.direction = Direction.valueOf(cd.getDirection().toString());
         this.isAlive = cd.isAlive();
+        this.speed = cd.getSpeed();
+
     }
 
     public void resetAvailableMovements(){
