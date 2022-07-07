@@ -28,8 +28,8 @@ public class Homepage extends JFrame {
         inizializeHomePage();
         playMusic(SoundManager.MAINTHEME);
         drawAddressTxt();
-        drawLocalBtn();
         drawUserTxt();
+        drawLocalBtn();
         drawExternalBtn();
     }
 
@@ -43,36 +43,6 @@ public class Homepage extends JFrame {
         this.setTitle("GARDENVILLE");
         setContentPane(lblMain);
         lblMain.setLayout(null);
-    }
-
-    private void drawExternalBtn() {
-        btnEsterno = new JButton("Server Esterno");
-        btnEsterno.setFont(new Font("Arial", Font.BOLD, 14));
-
-        btnEsterno.addActionListener(e -> {
-            if (isValidIp(txtIpAddress.getText()) && !txtUser.getText().equals("") && !txtUser.getText().equals(MSG_NOME) && !txtUser.getText().equals(ERRORE_NOME)) {
-                try {
-                    ipAddress = InetAddress.getByName(txtIpAddress.getText());
-                } catch (UnknownHostException ex) {
-                    throw new RuntimeException(ex);
-                }
-                Client client = new Client(ipAddress, 1234);
-                username = txtUser.getText();
-                client.start();
-                setVisible(false);
-                stopMusic();
-            } else {
-                if (!isValidIp(txtIpAddress.getText())) {
-                    txtIpAddress.setText(ERRORE_IP);
-                    txtIpAddress.setBackground(Color.RED);
-                } else {
-                    txtUser.setText(ERRORE_NOME);
-                    txtUser.setBackground(Color.RED);
-                }
-            }
-        });
-        btnEsterno.setBounds(525, 360, 150, 40);
-        lblMain.add(btnEsterno);
     }
 
     private void drawUserTxt() {
@@ -130,8 +100,38 @@ public class Homepage extends JFrame {
         lblMain.add(btnLocal);
     }
 
+    private void drawExternalBtn() {
+        btnEsterno = new JButton("Server Esterno");
+        btnEsterno.setFont(new Font("Arial", Font.BOLD, 14));
+
+        btnEsterno.addActionListener(e -> {
+            if (isValidIp(txtIpAddress.getText()) && !txtUser.getText().equals("") && !txtUser.getText().equals(MSG_NOME) && !txtUser.getText().equals(ERRORE_NOME)) {
+                try {
+                    ipAddress = InetAddress.getByName(txtIpAddress.getText());
+                } catch (UnknownHostException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Client client = new Client(ipAddress, 1234);
+                username = txtUser.getText();
+                client.start();
+                setVisible(false);
+                stopMusic();
+            } else {
+                if (!isValidIp(txtIpAddress.getText())) {
+                    txtIpAddress.setText(ERRORE_IP);
+                    txtIpAddress.setBackground(Color.RED);
+                } else {
+                    txtUser.setText(ERRORE_NOME);
+                    txtUser.setBackground(Color.RED);
+                }
+            }
+        });
+        btnEsterno.setBounds(525, 360, 150, 40);
+        lblMain.add(btnEsterno);
+    }
+
     public static boolean isValidIp(final String ip) {
-        return ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$");
+        return ip.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$") && ip.matches("127.0.0.1");
     }
 
     public String getUsername() {

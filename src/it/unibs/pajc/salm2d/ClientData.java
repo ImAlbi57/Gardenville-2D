@@ -119,11 +119,6 @@ public class ClientData implements Serializable {
         this.availableMovements[index] = status;
     }
 
-    public void setCoords(int x, int y) {
-        this.coords.setX(x);
-        this.coords.setY(y);
-    }
-
     public void moveX(int sign){
         coords.setX(coords.getX() + sign*speed);
     }
