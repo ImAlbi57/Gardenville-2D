@@ -19,6 +19,8 @@ public class PaintArea extends JComponent implements KeyListener{
     private HashMap<Integer,ClientData> otherClientData;
     private int halfTimeCounter, skinCounterPlayer, skinCounterNpc;
     private CollisionChecker cCheck;
+
+    private boolean isInPause = false;
     String talkingNpc;
     Sound sound = new Sound();
     Timer t, t1, t2;
@@ -160,6 +162,9 @@ public class PaintArea extends JComponent implements KeyListener{
         if(isInPause){
             printPauseMenu(g2);
         }
+
+        if(cCheck.getHutCollision())
+            restartGame();
     }
 
     private void checkCollisionNPC(){
@@ -251,8 +256,8 @@ public class PaintArea extends JComponent implements KeyListener{
     private void printHUDPlayer(Graphics2D g2){
         String[] info = new String[10];
         info[0] = "STATISTICHE";
-        info[1] = ""+mm.numKeys;
-        info[2] = ""+cCheck.openDoor;
+        info[1] = ""+mm.currentNumKeys;
+        info[2] = ""+mm.currentOpenDoor;
         info[3] = "Stamina";
         g2.setColor(new Color(255, 255, 255, 200));
         RoundRectangle2D rectHud2 = new RoundRectangle2D.Float(-scale.getX()/2f + 10, -scale.getY()/2f + 10, 270, 200, 25, 25);
@@ -264,7 +269,7 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.setColor(Color.WHITE);
         drawCenteredString(g2 , info[0], new Rectangle(-scale.getX()/2 , -scale.getY()/2 + 40, 250, 10) , font);
         drawCenteredString(g2 , "Chiavi: " + info[1] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 24, -scale.getY()/2 + 100, 250, 10) , font);
-        drawCenteredString(g2 , "Porte Aperte: " + info[2] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 140, 250, 10) , font);
+        drawCenteredString(g2 , "Porte:  " + info[2] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 - 24, -scale.getY()/2 + 140, 250, 10) , font);
         g2.setColor(new Color(30, 97, 252, 200));
         g2.fillRect(-518, 350, 11*myClientData.getStamina(), 30);
         g2.setColor(Color.WHITE);
@@ -334,8 +339,7 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void updateCoords() {
-        if(isInPause) return;
-        if(cCheck.getChestCollision()) return;
+        if(isInPause || cCheck.getHutCollision() || cCheck.getChestCollision()) return;
 
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);
@@ -371,8 +375,14 @@ public class PaintArea extends JComponent implements KeyListener{
         cCheck.checkTileCollision();
     }
 
+    private void restartGame() {
+        myClientData.reset();
+        mm.reset();
+
+        cCheck.resetHutCollision();
+    }
+
     public ArrayList<String> keyControl = new ArrayList<>();
-    private boolean isInPause = false;
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)

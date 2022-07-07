@@ -9,21 +9,23 @@ import java.util.Objects;
 
 public class MapManager {
 
-    public static final int numTiles = 48;  //the first 10 are empty (0-9)
+    public static final int numTiles = 47;  //the first 10 are empty (0-9)
     public static final int mapDim = 50;
     public static final int tileDim = 128;
 
     public final Tile[] tileList;
     public int[][][] mapTileNums;
-    public int numKeys;
-
-    public int counterKey;
     public int counterDoor;
+    public int counterKey;
+
+    public int currentNumKeys;
+    public int currentOpenDoor;
 
     public MapManager() {
         tileList = new Tile[numTiles];
         mapTileNums = new int[mapDim][mapDim][2];
-        numKeys = 0;
+        currentNumKeys = 0;
+        currentOpenDoor = 0;
         readMapData();
         getImages();
     }
@@ -39,7 +41,7 @@ public class MapManager {
                     if(mapTileNums[j][i][0] == 43){
                         counterKey++;
                     }
-                    if(mapTileNums[j][i][0] == 44){
+                    if(mapTileNums[j][i][0] == 44 || mapTileNums[j][i][0] == 45){
                         counterDoor++;
                     }
                 }
@@ -92,7 +94,6 @@ public class MapManager {
             tileList[44] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/door.png"))), true);
             tileList[45] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/fakedoor.png"))), true);
             tileList[46] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/chest.png"))), true);
-            tileList[47] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/sprites/object/fakedoor.png"))), false);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -115,5 +116,15 @@ public class MapManager {
         }
         if(tileNum[1] == 0)
             g2.drawImage(tileList[tileNum[0]].getImg(), x, y, this.tileDim, this.tileDim, null);
+    }
+
+    public void reset() {
+        for (int i = 0; i < 50; i++) {
+            for (int j = 0; j < 50; j++) {
+                mapTileNums[j][i][1] = 0; //NORMAL
+            }
+        }
+        currentNumKeys = 0;
+        currentOpenDoor = 0;
     }
 }

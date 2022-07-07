@@ -5,8 +5,8 @@ public class CollisionChecker {
     ClientData cd;
     Sound sound = new Sound();
     private boolean noKeyDoorCollision = false;
-    public int openDoor;
     private boolean chestCollision = false;
+    private boolean hutCollision = false;
 
     public CollisionChecker(MapManager mm, ClientData cd) {
         this.cd = cd;
@@ -56,6 +56,7 @@ public class CollisionChecker {
         if(tileNum2 == 44 || tileNum2 == 45) doorCollision(mm.mapTileNums, i2, j2);
         if(tileNum1 == 46) chestCollision(mm.mapTileNums, i1, j1);
         if(tileNum2 == 46) chestCollision(mm.mapTileNums, i2, j2);
+        if(tileNum1 == 42 || tileNum2 == 42) hutCollision = true;
 
         boolean canGoThru =
                 (!mm.tileList[tileNum1].isCollidable &&
@@ -63,6 +64,7 @@ public class CollisionChecker {
                     (mm.mapTileNums[i1][j1][1] == 1 ||
                     mm.mapTileNums[i2][j2][1] == 1);
         cd.setMovement(movement, canGoThru);
+
     }
 
     private void chestCollision(int[][][] map, int i, int j){
@@ -75,7 +77,7 @@ public class CollisionChecker {
     private void keyCollision(int[][][] map, int i, int j){
         if(map[i][j][1] == 1)
             return;
-        mm.numKeys++;
+        mm.currentNumKeys++;
         map[i][j][1] = 1;
         playMusic(Sound.KEYSOUND);
         System.out.println("CHIAVE RACCOLTA");
@@ -85,27 +87,35 @@ public class CollisionChecker {
         if(map[i][j][1] == 1){
             return;
         }
-        if(mm.numKeys <= 0){
+        if(mm.currentNumKeys <= 0){
             noKeyDoorCollision = true;
             return;
         }
-        openDoor++;
-        mm.numKeys--;
+        mm.currentOpenDoor++;
+        mm.currentNumKeys--;
         map[i][j][1] = 1;
         playMusic(Sound.UNLOCKDOOR);
         System.out.println("PORTA SBLOCCATA");
-    }
-
-    public boolean getNoKeyCollision() {
-        return noKeyDoorCollision;
     }
 
     public boolean getChestCollision(){
         return chestCollision;
     }
 
+    public boolean getNoKeyCollision() {
+        return noKeyDoorCollision;
+    }
+
     public void resetNoKeyCollision() {
         noKeyDoorCollision = false;
+    }
+
+    public boolean getHutCollision(){
+        return hutCollision;
+    }
+
+    public void resetHutCollision() {
+        hutCollision = false;
     }
 
     public void playMusic(int i){

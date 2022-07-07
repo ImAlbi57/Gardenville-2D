@@ -119,6 +119,11 @@ public class ClientData implements Serializable {
         this.availableMovements[index] = status;
     }
 
+    public void setCoords(int x, int y) {
+        this.coords.setX(x);
+        this.coords.setY(y);
+    }
+
     public void moveX(int sign){
         coords.setX(coords.getX() + sign*speed);
     }
@@ -178,5 +183,12 @@ public class ClientData implements Serializable {
 
     public void setStamina(int stamina) {
         this.stamina = stamina;
+    }
+
+    public void reset() {
+        coords = new Coords(2975, 2700);
+        direction = Direction.S;
+        availableMovements = new boolean[4];
+        stamina = 100;
     }
 }
