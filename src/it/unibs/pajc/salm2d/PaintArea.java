@@ -46,7 +46,7 @@ public class PaintArea extends JComponent implements KeyListener{
         t1 = new Timer(250, (e) -> {
             removeDeadPlayer();
             checkStamina();
-            if(isMoving() && (!isInInventory || !isInPause)){
+            if(isMoving() && !isInPause){
                 updateTimeCounter();
                 if(myClientData.getSpeed() == 5 || halfTimeCounter == 0){
                     updateSkinMovement();
@@ -136,9 +136,6 @@ public class PaintArea extends JComponent implements KeyListener{
 
         drawPlayer(g2, myClientData, Coords.ZERO, 0);
 
-        if(isInInventory){
-            printInventory(g2);
-        }
         if(isInPause){
             printPauseMenu(g2);
         }
@@ -215,6 +212,10 @@ public class PaintArea extends JComponent implements KeyListener{
         drawCenteredString(g2 , "Chiavi: " + info[0] + "/" + mm.counterKey, new Rectangle(-scale.getX()/2 - 22 , -scale.getY()/2 + 40, 250, 10) , font);
         drawCenteredString(g2 , "Porte Aperte: " + info[1] + "/" + mm.counterDoor, new Rectangle(-scale.getX()/2 + 20, -scale.getY()/2 + 80, 250, 10) , font);
         drawCenteredString(g2 , "Stamina: " + info[2] + "/" + 100, new Rectangle(-scale.getX()/2 + 18, -scale.getY()/2 + 120, 250, 10) , font);
+        g2.setColor(new Color(30, 97, 252, 200));
+        g2.fillRect(-500, 350, 10*myClientData.getStamina(), 30);
+        g2.setColor(Color.WHITE);
+        g2.drawRect(-500, 350, 1000, 30);
     }
 
     public void drawCenteredString(Graphics2D g2, String text, Rectangle rect, Font font) {
@@ -260,9 +261,7 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void updateCoords() {
-        if(isInInventory) return;
         if(isInPause) return;
-        if(cCheck.getNoKeyCollision()) return;
 
         if(keyControl.contains(""+KeyEvent.VK_W) && myClientData.isMovementAvailable(ClientData.MOVEMENT_W))
             myClientData.moveY(-1);
@@ -277,13 +276,12 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     private void checkStamina(){
-        if(keyControl.contains(""+KeyEvent.VK_SHIFT)){
+        if(isMoving() && keyControl.contains(""+KeyEvent.VK_SHIFT)){
             if(myClientData.getStamina() >= 1)
                 myClientData.setStamina(myClientData.getStamina() - 1);
         }
         else{
-            if(myClientData.getStamina() <= 98)
-                myClientData.setStamina(myClientData.getStamina() + 2);
+            myClientData.setStamina(Math.min(100, myClientData.getStamina() + 2));
         }
     }
 
@@ -300,22 +298,17 @@ public class PaintArea extends JComponent implements KeyListener{
     }
 
     public ArrayList<String> keyControl = new ArrayList<>();
-    private boolean isInInventory = false;
     private boolean isInPause = false;
     @Override
     public synchronized void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SHIFT)
             myClientData.setSpeed(5);
 
-
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
             isInPause = !isInPause;
 
-        if(e.getKeyCode() == KeyEvent.VK_ENTER)
+        if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_E)
             cCheck.resetNoKeyCollision();
-
-        if(e.getKeyCode() == KeyEvent.VK_E)
-            isInInventory = !isInInventory;
 
         if(!keyControl.contains(""+e.getKeyCode()))
             keyControl.add(""+e.getKeyCode());

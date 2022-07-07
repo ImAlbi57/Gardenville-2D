@@ -73,7 +73,7 @@ public class Client {
         String username = hp.getUsername();
         System.out.println("Benvenuto Utente: " + ID);
 
-        cd = new ClientData(ID, new Coords(2725,2971), username);
+        cd = new ClientData(ID, new Coords(2975,2700), username);
         wb = new WhiteBoard(cd);
 
 
