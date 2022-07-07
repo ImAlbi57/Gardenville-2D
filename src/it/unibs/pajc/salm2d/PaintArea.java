@@ -155,12 +155,12 @@ public class PaintArea extends JComponent implements KeyListener{
         g2.drawString(state, -225, 75);
 
 
-        g2.fillRect(-225, 150, 200, 80);
-        Font f1 = new Font("SansSerif", Font.BOLD, 50);
-        g2.setFont(f1);
-        g2.setColor(Color.BLACK);
-        String quit = "QUIT";
-        g2.drawString(quit, -190, 210);
+        //g2.fillRect(-225, 150, 200, 80);
+        //Font f1 = new Font("SansSerif", Font.BOLD, 50);
+        //g2.setFont(f1);
+        //g2.setColor(Color.BLACK);
+        //String quit = "QUIT";
+        //g2.drawString(quit, -190, 210);
 
         //Rendere quit utilizzabile
     }
