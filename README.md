@@ -1,5 +1,6 @@
 # Gardenville 2D
-Gioco 2D in Java realizzato da me e [@SpaMichUnibs](https://github.com/SpaMichUnibs)
+Gioco 2D in Java realizzato da me e [@SpaMichUnibs](https://github.com/SpaMichUnibs) <br/>
+Per visualizzare il PDF della presentazione del progetto clicca [qui](src/res/pp/GARDENVILLE%202D.pdf)
 
 ## Requisiti rispettati
 - Interfaccia Grafica, Java Swing o altri framework
